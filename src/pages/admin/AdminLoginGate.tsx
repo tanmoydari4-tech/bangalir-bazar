@@ -85,8 +85,11 @@ export const AdminLoginGate: React.FC<AdminLoginGateProps> = ({ onSuccess, onNav
 
           <form onSubmit={handleLogin} className="space-y-4 text-xs">
             <div>
-              <label className="block text-gray-700 font-bold mb-1.5">
-                Admin Email Address
+              <label className="block text-gray-700 font-bold mb-1.5 flex items-center justify-between">
+                <span>Admin Email Address</span>
+                <span className="text-[10px] text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded-md">
+                  Pre-filled
+                </span>
               </label>
               <div className="relative">
                 <Mail className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -96,24 +99,28 @@ export const AdminLoginGate: React.FC<AdminLoginGateProps> = ({ onSuccess, onNav
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="admin@bangalirbazar.com"
-                  className="w-full pl-10 pr-3.5 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#176B45] text-xs font-medium"
+                  className="w-full pl-10 pr-3.5 py-2.5 border border-gray-200 bg-gray-50/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#176B45] text-xs font-semibold text-gray-800"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-gray-700 font-bold mb-1.5">
-                Admin Password
+              <label className="block text-gray-700 font-bold mb-1.5 flex items-center justify-between">
+                <span>Admin Password</span>
+                <span className="text-[10px] text-gray-400 font-normal">
+                  Type password to sign in
+                </span>
               </label>
               <div className="relative">
                 <Lock className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="password"
                   required
+                  autoFocus
                   autoComplete="new-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter admin password"
+                  placeholder="Enter admin password (e.g. admin123)"
                   className="w-full pl-10 pr-3.5 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#176B45] text-xs font-medium"
                 />
               </div>
