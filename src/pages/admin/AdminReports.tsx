@@ -31,7 +31,7 @@ export const AdminReports: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-black text-gray-900">Retail Sales & Order Analytics</h1>
+        <h1 className="text-xl sm:text-2xl font-black text-gray-900">Retail Sales & Order Analytics</h1>
         <p className="text-xs text-gray-500 mt-0.5">
           Verified financial performance based on actual checkout records (excluding cancellations)
         </p>

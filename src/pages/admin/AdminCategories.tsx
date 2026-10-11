@@ -64,9 +64,9 @@ export const AdminCategories: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <div>
-          <h1 className="text-2xl font-black text-gray-900">Product Categories</h1>
+          <h1 className="text-xl sm:text-2xl font-black text-gray-900">Product Categories</h1>
           <p className="text-xs text-gray-500 mt-0.5">
             Configure storefront category tiles, nested subcategories, and display order
           </p>
@@ -74,7 +74,7 @@ export const AdminCategories: React.FC = () => {
 
         <button
           onClick={openCreateModal}
-          className="px-4 py-2.5 bg-[#176B45] hover:bg-[#125436] text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-xs"
+          className="px-3.5 sm:px-4 py-2 sm:py-2.5 bg-[#176B45] hover:bg-[#125436] text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-xs shrink-0 self-start sm:self-auto"
         >
           <Plus className="w-4 h-4" />
           <span>Add New Category</span>

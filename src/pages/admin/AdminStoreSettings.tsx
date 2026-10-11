@@ -26,9 +26,9 @@ export const AdminStoreSettings: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <div>
-          <h1 className="text-2xl font-black text-gray-900">Store Settings & Branding</h1>
+          <h1 className="text-xl sm:text-2xl font-black text-gray-900">Store Settings & Branding</h1>
           <p className="text-xs text-gray-500 mt-0.5">
             Configure brand name, contact channels, announcement ribbon, and hero headlines
           </p>
@@ -36,7 +36,7 @@ export const AdminStoreSettings: React.FC = () => {
 
         <button
           onClick={resetAllDataToDemo}
-          className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors"
+          className="px-3.5 sm:px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors shrink-0 self-start sm:self-auto"
         >
           <RotateCcw className="w-3.5 h-3.5" />
           <span>Reset Demo Data</span>

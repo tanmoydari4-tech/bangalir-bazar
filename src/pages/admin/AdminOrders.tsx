@@ -68,14 +68,14 @@ export const AdminOrders: React.FC = () => {
       
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-black text-gray-900">Customer Orders & Fulfillment</h1>
+        <h1 className="text-xl sm:text-2xl font-black text-gray-900">Customer Orders & Fulfillment</h1>
         <p className="text-xs text-gray-500 mt-0.5">
           Process orders through the packing pipeline, assign riders, and print retail slips
         </p>
       </div>
 
       {/* Filter and Search */}
-      <div className="bg-white p-4 rounded-2xl border border-[#E5EAE5] flex flex-col sm:flex-row gap-3">
+      <div className="bg-white p-3.5 sm:p-4 rounded-2xl border border-[#E5EAE5] flex flex-col sm:flex-row gap-3">
         <div className="flex-1 relative">
           <input
             type="text"

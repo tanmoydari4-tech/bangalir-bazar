@@ -9,7 +9,7 @@ export const AdminEnquiries: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-black text-gray-900">Customer Support Enquiries</h1>
+        <h1 className="text-xl sm:text-2xl font-black text-gray-900">Customer Support Enquiries</h1>
         <p className="text-xs text-gray-500 mt-0.5">
           Tickets submitted via the Contact Us form (product queries, returns, delivery delays)
         </p>

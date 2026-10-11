@@ -85,74 +85,83 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
     setTimeout(() => setSyncToast(null), 4000);
   };
 
-  const navItems: { id: AdminTab; label: string; icon: React.FC<{ className?: string }>; highlight?: boolean }[] = [
-    { id: 'overview', label: 'Dashboard Overview', icon: LayoutDashboard },
-    { id: 'data-sync', label: '⚡ Change All Data & Sync', icon: Database, highlight: true },
-    { id: 'products', label: 'Products & Pricing', icon: Package },
-    { id: 'categories', label: 'Categories & Subcategories', icon: Layers },
-    { id: 'inventory', label: 'Inventory & Stock Restock', icon: Boxes },
-    { id: 'orders', label: 'Orders & Fulfillment', icon: ShoppingBag },
-    { id: 'delivery', label: 'Delivery Areas & PINs', icon: MapPin },
-    { id: 'coupons', label: 'Coupons & Discount Offers', icon: Tag },
-    { id: 'settings', label: 'Store Settings & Brand', icon: Settings },
-    { id: 'customers', label: 'Customers & Addresses', icon: Users },
-    { id: 'enquiries', label: 'Support Enquiries', icon: HelpCircle },
-    { id: 'reports', label: 'Sales & Inventory Reports', icon: BarChart3 }
+  const navItems: { id: AdminTab; label: string; shortLabel: string; icon: React.FC<{ className?: string }>; highlight?: boolean }[] = [
+    { id: 'overview', label: 'Dashboard Overview', shortLabel: 'Overview', icon: LayoutDashboard },
+    { id: 'data-sync', label: '⚡ Change All Data & Sync', shortLabel: '⚡ Change Data', icon: Database, highlight: true },
+    { id: 'products', label: 'Products & Pricing', shortLabel: 'Products', icon: Package },
+    { id: 'categories', label: 'Categories & Subcategories', shortLabel: 'Categories', icon: Layers },
+    { id: 'inventory', label: 'Inventory & Stock Restock', shortLabel: 'Inventory', icon: Boxes },
+    { id: 'orders', label: 'Orders & Fulfillment', shortLabel: 'Orders', icon: ShoppingBag },
+    { id: 'delivery', label: 'Delivery Areas & PINs', shortLabel: 'Delivery', icon: MapPin },
+    { id: 'coupons', label: 'Coupons & Discount Offers', shortLabel: 'Coupons', icon: Tag },
+    { id: 'settings', label: 'Store Settings & Brand', shortLabel: 'Settings', icon: Settings },
+    { id: 'customers', label: 'Customers & Addresses', shortLabel: 'Customers', icon: Users },
+    { id: 'enquiries', label: 'Support Enquiries', shortLabel: 'Enquiries', icon: HelpCircle },
+    { id: 'reports', label: 'Sales & Inventory Reports', shortLabel: 'Reports', icon: BarChart3 }
   ];
 
   return (
-    <div className="min-h-screen bg-[#F4F7F4] flex flex-col">
+    <div className="min-h-screen bg-[#F4F7F4] flex flex-col w-full overflow-x-hidden">
       
-      {/* Top Admin Header */}
-      <header className="bg-[#176B45] text-white px-4 sm:px-6 py-3 border-b border-[#125436] flex items-center justify-between sticky top-0 z-30 shadow-md">
-        <div className="flex items-center gap-3">
+      {/* Top Admin Header - Auto-adjusts cleanly on mobile screens */}
+      <header className="bg-[#176B45] text-white px-3 sm:px-6 py-2.5 sm:py-3 border-b border-[#125436] flex items-center justify-between sticky top-0 z-30 shadow-md">
+        
+        {/* Left: Mobile hamburger + Brand Title */}
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1 mr-2">
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="lg:hidden p-1.5 rounded-lg hover:bg-white/10"
+            className="lg:hidden p-1.5 -ml-1 rounded-lg hover:bg-white/10 text-white shrink-0 focus:outline-none"
+            aria-label="Toggle navigation menu"
           >
             {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
 
-          <div className="flex items-center gap-2 cursor-pointer" onClick={() => onTabChange('overview')}>
-            <div className="w-8 h-8 rounded-lg bg-[#FFD166] text-[#252B27] flex items-center justify-center font-black text-sm shadow-xs">
+          <div
+            className="flex items-center gap-2 cursor-pointer min-w-0"
+            onClick={() => onTabChange('overview')}
+          >
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#FFD166] text-[#252B27] flex items-center justify-center font-black text-xs sm:text-sm shadow-xs shrink-0">
               BB
             </div>
-            <div>
-              <span className="font-extrabold text-sm sm:text-base leading-tight">
+            <div className="min-w-0">
+              <span className="font-extrabold text-xs sm:text-base leading-tight truncate block">
                 {language === 'bn' ? storeSettings.storeNameBn : storeSettings.storeNameEn}
               </span>
-              <span className="block text-[10px] text-green-200">
-                Store Operations Admin Panel
+              <span className="block text-[9px] sm:text-[10px] text-green-200 truncate">
+                Admin Panel
               </span>
             </div>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 sm:gap-3">
+        {/* Right: Quick Actions */}
+        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
           <button
             onClick={() => onTabChange('data-sync')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all shadow-xs ${
+            title="Change All Store Data & Master Sync"
+            className={`flex items-center gap-1 px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl text-[11px] sm:text-xs font-bold transition-all shadow-xs shrink-0 ${
               currentTab === 'data-sync'
                 ? 'bg-white text-[#176B45]'
                 : 'bg-[#FFD166] text-[#252B27] hover:bg-yellow-300'
             }`}
           >
-            <Sparkles className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Change All Store Data</span>
-            <span className="sm:hidden">Change Data</span>
+            <Sparkles className="w-3.5 h-3.5 shrink-0" />
+            <span className="hidden md:inline">Change All Store Data</span>
+            <span className="md:hidden">Data</span>
           </button>
 
           <button
             onClick={onNavigateStore}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-semibold transition-colors"
+            title="View Storefront"
+            className="flex items-center gap-1 px-2 sm:px-3 py-1 sm:py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-xl text-[11px] sm:text-xs font-semibold transition-colors shrink-0"
           >
-            <span className="hidden sm:inline">View Storefront</span>
-            <ExternalLink className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Storefront</span>
+            <ExternalLink className="w-3.5 h-3.5 shrink-0" />
           </button>
 
-          <div className="flex items-center gap-2 pl-2 border-l border-green-700/60 text-xs">
-            <span className="hidden md:inline font-bold text-white truncate max-w-[120px]">
-              {currentUser?.name || 'Administrator'}
+          <div className="flex items-center gap-1 pl-1.5 border-l border-green-700/60 text-xs shrink-0">
+            <span className="hidden xl:inline font-bold text-white truncate max-w-[100px]">
+              {currentUser?.name || 'Admin'}
             </span>
             <button
               onClick={() => {
@@ -168,51 +177,52 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
         </div>
       </header>
 
-      {/* Admin Broadcast / Control Ribbon */}
-      <div className="bg-[#125436] text-green-100 px-4 sm:px-6 py-2 text-xs flex flex-wrap items-center justify-between gap-2 border-b border-[#0e432a]">
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span className="font-bold text-white">Administrator Mode Active:</span>
-          <span className="hidden sm:inline text-green-200">
-            You can modify all store branding, pricing, products, categories, delivery zones, and settings in real time.
+      {/* Admin Broadcast / Control Ribbon - Auto-adjusts cleanly */}
+      <div className="bg-[#125436] text-green-100 px-3 sm:px-6 py-1.5 sm:py-2 text-xs flex flex-wrap items-center justify-between gap-1.5 sm:gap-2 border-b border-[#0e432a]">
+        <div className="flex items-center gap-1.5 min-w-0">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
+          <span className="font-bold text-white text-[11px] sm:text-xs shrink-0">Admin Mode</span>
+          <span className="hidden md:inline text-green-200 text-xs">
+            • Live master database editing active
           </span>
         </div>
 
-        <div className="flex items-center gap-2 ml-auto">
+        <div className="flex items-center gap-1 sm:gap-2 ml-auto shrink-0">
           <button
             onClick={handleQuickPush}
             title="Push all tables to Supabase"
-            className="px-2.5 py-1 bg-white/10 hover:bg-white/20 text-white rounded-lg text-[11px] font-semibold flex items-center gap-1.5 transition-colors"
+            className="px-2 py-0.5 sm:py-1 bg-white/10 hover:bg-white/20 text-white rounded-md sm:rounded-lg text-[10px] sm:text-[11px] font-semibold flex items-center gap-1 transition-colors shrink-0"
           >
-            <CloudUpload className="w-3 h-3 text-[#FFD166]" />
-            <span className="hidden md:inline">Push to Supabase</span>
-            <span className="md:hidden">Push</span>
+            <CloudUpload className="w-3 h-3 text-[#FFD166] shrink-0" />
+            <span className="hidden sm:inline">Push Supabase</span>
+            <span className="sm:hidden">Push</span>
           </button>
 
           <button
             onClick={handleQuickFetch}
             title="Fetch live tables from Supabase"
-            className="px-2.5 py-1 bg-white/10 hover:bg-white/20 text-white rounded-lg text-[11px] font-semibold flex items-center gap-1.5 transition-colors"
+            className="px-2 py-0.5 sm:py-1 bg-white/10 hover:bg-white/20 text-white rounded-md sm:rounded-lg text-[10px] sm:text-[11px] font-semibold flex items-center gap-1 transition-colors shrink-0"
           >
-            <CloudDownload className="w-3 h-3 text-emerald-300" />
-            <span className="hidden md:inline">Fetch from Supabase</span>
-            <span className="md:hidden">Fetch</span>
+            <CloudDownload className="w-3 h-3 text-emerald-300 shrink-0" />
+            <span className="hidden sm:inline">Fetch Supabase</span>
+            <span className="sm:hidden">Fetch</span>
           </button>
 
           <button
             onClick={resetAllDataToDemo}
-            className="px-2.5 py-1 bg-white/10 hover:bg-white/20 text-green-200 hover:text-white rounded-lg text-[11px] font-semibold flex items-center gap-1 transition-colors"
+            className="px-2 py-0.5 sm:py-1 bg-white/10 hover:bg-white/20 text-green-200 hover:text-white rounded-md sm:rounded-lg text-[10px] sm:text-[11px] font-semibold flex items-center gap-1 transition-colors shrink-0"
             title="Reset store catalog to original demo dataset"
           >
-            <RotateCcw className="w-3 h-3 text-amber-300" />
-            <span className="hidden md:inline">Reset Demo</span>
+            <RotateCcw className="w-3 h-3 text-amber-300 shrink-0" />
+            <span className="hidden sm:inline">Reset Demo</span>
+            <span className="sm:hidden">Reset</span>
           </button>
         </div>
       </div>
 
       {/* Sync Toast Feedback */}
       {syncToast && (
-        <div className={`px-4 py-2.5 text-xs text-center font-bold transition-all ${
+        <div className={`px-4 py-2 text-xs text-center font-bold transition-all ${
           syncToast.type === 'loading'
             ? 'bg-amber-500 text-gray-950 animate-pulse'
             : syncToast.type === 'success'
@@ -223,8 +233,35 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
         </div>
       )}
 
+      {/* Mobile Horizontal Quick Tab Bar - One touch switching between all admin views */}
+      <nav
+        aria-label="Admin Navigation Tabs"
+        className="lg:hidden bg-white border-b border-gray-200 px-2 sm:px-3 py-2 overflow-x-auto scrollbar-none flex items-center gap-1.5 sticky top-[48px] sm:top-[57px] z-20 shadow-2xs"
+      >
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = currentTab === item.id;
+          return (
+            <button
+              key={item.id}
+              onClick={() => onTabChange(item.id)}
+              className={`px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shrink-0 transition-colors ${
+                isActive
+                  ? 'bg-[#176B45] text-white shadow-xs'
+                  : item.highlight
+                  ? 'bg-amber-100 text-amber-900 border border-amber-300'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-white' : item.highlight ? 'text-amber-700' : 'text-[#176B45]'}`} />
+              <span className="whitespace-nowrap">{item.shortLabel}</span>
+            </button>
+          );
+        })}
+      </nav>
+
       {/* Main Body */}
-      <div className="flex-1 flex max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 gap-6">
+      <div className="flex-1 flex max-w-7xl w-full mx-auto px-3 sm:px-6 py-4 sm:py-6 gap-4 sm:gap-6 min-w-0">
         
         {/* Mobile Backdrop Overlay */}
         {isMobileMenuOpen && (
@@ -299,7 +336,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
         </aside>
 
         {/* Content Pane */}
-        <main className="flex-1 min-w-0 space-y-6">
+        <main className="flex-1 min-w-0 space-y-4 sm:space-y-6 overflow-hidden">
           {children}
         </main>
       </div>

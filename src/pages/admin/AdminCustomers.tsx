@@ -30,13 +30,13 @@ export const AdminCustomers: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-black text-gray-900">Customer Accounts</h1>
+        <h1 className="text-xl sm:text-2xl font-black text-gray-900">Customer Accounts</h1>
         <p className="text-xs text-gray-500 mt-0.5">
           View registered customer profiles, delivery addresses, and lifetime purchase totals
         </p>
       </div>
 
-      <div className="bg-white p-4 rounded-2xl border border-[#E5EAE5] flex items-center">
+      <div className="bg-white p-3.5 sm:p-4 rounded-2xl border border-[#E5EAE5] flex items-center">
         <div className="flex-1 relative">
           <input
             type="text"

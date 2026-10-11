@@ -44,14 +44,14 @@ export const AdminInventory: React.FC = () => {
       
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-black text-gray-900">Inventory & Stock Movements</h1>
+        <h1 className="text-xl sm:text-2xl font-black text-gray-900">Inventory & Stock Movements</h1>
         <p className="text-xs text-gray-500 mt-0.5">
           Real-time stock ledger, replenishment logging, and inventory write-offs
         </p>
       </div>
 
       {/* Products Stock Table */}
-      <div className="bg-white rounded-3xl border border-[#E5EAE5] p-5 sm:p-6 shadow-xs space-y-4">
+      <div className="bg-white rounded-2xl sm:rounded-3xl border border-[#E5EAE5] p-3.5 sm:p-6 shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-gray-100">
           <h2 className="font-extrabold text-base text-gray-900 flex items-center gap-2">
             <Boxes className="w-5 h-5 text-[#176B45]" />
