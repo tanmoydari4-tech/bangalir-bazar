@@ -24,11 +24,14 @@ export const CustomerLoginPage: React.FC<CustomerLoginPageProps> = ({
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [mobile, setMobile] = useState('');
+  const [savedCredentials, setSavedCredentials] = useState<{ email: string; password: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setSuccessMessage(null);
 
     if (mode === 'login') {
       if (!email.trim() || !password.trim()) {
@@ -53,12 +56,23 @@ export const CustomerLoginPage: React.FC<CustomerLoginPageProps> = ({
         setError('Please enter a valid 10-digit mobile number.');
         return;
       }
-      registerUser(name.trim(), email.trim(), mobile.trim());
-      if (redirectTo) {
-        onNavigate(redirectTo);
-      } else {
-        onNavigate('account');
-      }
+      
+      const regEmail = email.trim();
+      const regPassword = password.trim();
+      
+      // Register user in store
+      registerUser(name.trim(), regEmail, mobile.trim());
+
+      // Save credentials for login auto-fill
+      setSavedCredentials({ email: regEmail, password: regPassword });
+      
+      // Auto-switch to login mode with auto-filled credentials
+      setMode('login');
+      setEmail(regEmail);
+      setPassword(regPassword);
+      setSuccessMessage(
+        'Account created successfully! Your email and password have been auto-filled. Click Login to proceed.'
+      );
     }
   };
 
@@ -103,8 +117,13 @@ export const CustomerLoginPage: React.FC<CustomerLoginPageProps> = ({
             onClick={() => {
               setMode('login');
               setError(null);
-              setEmail('');
-              setPassword('');
+              if (savedCredentials) {
+                setEmail(savedCredentials.email);
+                setPassword(savedCredentials.password);
+              } else {
+                setEmail('');
+                setPassword('');
+              }
             }}
             className={`flex-1 py-2 text-xs font-extrabold rounded-xl transition-all ${
               mode === 'login' ? 'bg-white text-[#176B45] shadow-xs' : 'text-gray-600'
@@ -117,6 +136,7 @@ export const CustomerLoginPage: React.FC<CustomerLoginPageProps> = ({
             onClick={() => {
               setMode('register');
               setError(null);
+              setSuccessMessage(null);
               setEmail('');
               setPassword('');
               setName('');
@@ -129,6 +149,13 @@ export const CustomerLoginPage: React.FC<CustomerLoginPageProps> = ({
             {t('register')}
           </button>
         </div>
+
+        {successMessage && mode === 'login' && (
+          <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs rounded-xl font-medium flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+            <span>{successMessage}</span>
+          </div>
+        )}
 
         {error && (
           <div className="p-3 bg-rose-50 border border-rose-200 text-rose-800 text-xs rounded-xl font-medium">
