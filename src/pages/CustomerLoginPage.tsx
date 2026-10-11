@@ -6,12 +6,14 @@ import { ShieldCheck, User, Lock, Mail, Phone, CheckCircle2 } from 'lucide-react
 interface CustomerLoginPageProps {
   redirectTo?: string;
   initialMode?: 'login' | 'register';
+  message?: string;
   onNavigate: (page: string, params?: Record<string, string>) => void;
 }
 
 export const CustomerLoginPage: React.FC<CustomerLoginPageProps> = ({
   redirectTo,
   initialMode = 'login',
+  message,
   onNavigate
 }) => {
   const { login, registerUser } = useStore();
@@ -79,13 +81,13 @@ export const CustomerLoginPage: React.FC<CustomerLoginPageProps> = ({
           {mode === 'login' ? t('loginSubtitle') : t('registerSubtitle')}
         </p>
 
-        {redirectTo === 'checkout' && (
-          <div className="mt-3 p-3 bg-amber-50 border border-amber-200 text-amber-900 rounded-2xl text-xs flex items-center gap-2.5 text-left font-medium">
+        {(message || redirectTo === 'checkout') && (
+          <div className="mt-3 p-3.5 bg-amber-50 border border-amber-200 text-amber-900 rounded-2xl text-xs flex items-center gap-3 text-left font-medium shadow-xs">
             <ShieldCheck className="w-5 h-5 text-amber-700 shrink-0" />
-            <span>
-              {mode === 'register'
-                ? 'Create your account first with your name and mobile number to proceed with your grocery order.'
-                : 'Please sign in to your account to complete your grocery order and doorstep delivery.'}
+            <span className="leading-relaxed">
+              {message || (mode === 'register'
+                ? 'Please log in or create an account before purchasing this product.'
+                : 'Please log in or create an account before purchasing this product.')}
             </span>
           </div>
         )}

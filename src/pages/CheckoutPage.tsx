@@ -98,9 +98,12 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
               STEP 1: ACCOUNT REQUIRED
             </span>
             <h2 className="text-2xl font-black text-[#252B27]">
-              {language === 'bn' ? 'অর্ডার করতে প্রথমে অ্যাকাউন্ট তৈরি বা লগইন করুন' : 'Create Account or Sign In to Place Order'}
+              {language === 'bn' ? 'অর্ডার করতে প্রথমে অ্যাকাউন্ট তৈরি বা লগইন করুন' : 'Please Log In or Create an Account'}
             </h2>
-            <p className="text-xs sm:text-sm text-gray-500 max-w-sm mx-auto leading-relaxed">
+            <div className="p-3 bg-amber-50 border border-amber-200 text-amber-900 rounded-2xl text-xs sm:text-sm font-semibold max-w-md mx-auto">
+              "Please log in or create an account before purchasing this product."
+            </div>
+            <p className="text-xs text-gray-500 max-w-sm mx-auto leading-relaxed pt-1">
               {language === 'bn'
                 ? 'আপনার ঝুড়িতে পণ্য প্রস্তুত আছে। ডেলিভারির ঠিকানা সংরক্ষণ এবং অর্ডার ট্র্যাকিংয়ের জন্য প্রথমে অ্যাকাউন্ট তৈরি করুন অথবা লগইন করুন।'
                 : 'Your grocery basket is saved. To ensure accurate doorstep delivery and real-time order tracking, please create an account or sign in first.'}

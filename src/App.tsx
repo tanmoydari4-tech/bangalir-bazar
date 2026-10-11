@@ -161,6 +161,7 @@ export function AppContent() {
           <CustomerLoginPage
             redirectTo={pageParams.redirect}
             initialMode={pageParams.mode as 'login' | 'register'}
+            message={pageParams.message}
             onNavigate={navigate}
           />
         )}

@@ -29,6 +29,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId,
     products,
     categories,
     cart,
+    currentUser,
     addToCart,
     updateCartQuantity,
     isWishlisted,
@@ -94,6 +95,14 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId,
   const handleBuyNow = () => {
     if (quantityInCart === 0) {
       addToCart(product, 1);
+    }
+    if (!currentUser) {
+      onNavigate('login', {
+        mode: 'register',
+        redirect: 'checkout',
+        message: 'Please log in or create an account before purchasing this product.'
+      });
+      return;
     }
     onNavigate('checkout');
   };
