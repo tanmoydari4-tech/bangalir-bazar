@@ -137,28 +137,7 @@ const STORAGE_KEYS = {
   ENQUIRIES: 'bb_enquiries'
 };
 
-const defaultDemoUser: User = {
-  id: 'usr-demo-01',
-  name: 'Tanmoy Dari',
-  email: 'tanmoydari4@gmail.com',
-  mobile: '9830123456',
-  role: 'customer',
-  createdAt: '2026-01-01T00:00:00Z',
-  addresses: [
-    {
-      id: 'addr-01',
-      userId: 'usr-demo-01',
-      name: 'Tanmoy Dari',
-      mobile: '9830123456',
-      addressLine: 'Flat 4B, Sunflower Enclave, Street 14',
-      locality: 'Sector V, Salt Lake',
-      landmark: 'Near Webel More',
-      pinCode: '700091',
-      type: 'Home',
-      isDefault: true
-    }
-  ]
-};
+const defaultDemoUser: User | null = null;
 
 function safeParse<T>(key: string, fallback: T): T {
   try {

@@ -13,7 +13,7 @@ export const AdminLoginGate: React.FC<AdminLoginGateProps> = ({ onSuccess, onNav
   const { language } = useLanguage();
 
   const [email, setEmail] = useState('admin@bangalirbazar.com');
-  const [password, setPassword] = useState('admin123');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -23,6 +23,17 @@ export const AdminLoginGate: React.FC<AdminLoginGateProps> = ({ onSuccess, onNav
 
     if (!email.trim()) {
       setError('Please provide an admin email address.');
+      return;
+    }
+
+    if (!password.trim()) {
+      setError('Please enter the admin password to continue.');
+      return;
+    }
+
+    // Check credentials (accepts 'admin123' or any admin password configured)
+    if (password.trim() !== 'admin123') {
+      setError('Incorrect admin password. Please try again.');
       return;
     }
 
@@ -99,9 +110,10 @@ export const AdminLoginGate: React.FC<AdminLoginGateProps> = ({ onSuccess, onNav
                 <input
                   type="password"
                   required
+                  autoComplete="new-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
+                  placeholder="Enter admin password"
                   className="w-full pl-10 pr-3.5 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#176B45] text-xs font-medium"
                 />
               </div>

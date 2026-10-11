@@ -36,7 +36,8 @@ export const CartPage: React.FC<CartPageProps> = ({ onNavigate }) => {
     coupons,
     activePinCode,
     selectedDeliveryArea,
-    storeSettings
+    storeSettings,
+    currentUser
   } = useStore();
   const { t, language } = useLanguage();
 
@@ -346,12 +347,33 @@ export const CartPage: React.FC<CartPageProps> = ({ onNavigate }) => {
             </div>
 
             <button
-              onClick={() => onNavigate('checkout')}
-              className="w-full py-3.5 bg-[#176B45] hover:bg-[#125436] text-white font-extrabold text-sm rounded-xl transition-all shadow-md flex items-center justify-center gap-2 active:scale-98"
+              onClick={() => {
+                if (!currentUser) {
+                  onNavigate('login', { mode: 'register', redirect: 'checkout' });
+                } else {
+                  onNavigate('checkout');
+                }
+              }}
+              className="w-full py-3.5 bg-[#176B45] hover:bg-[#125436] text-white font-extrabold text-sm rounded-xl transition-all shadow-md flex items-center justify-center gap-2 active:scale-98 cursor-pointer"
             >
-              <span>{t('proceedToCheckout')}</span>
+              <span>{currentUser ? t('proceedToCheckout') : (language === 'bn' ? 'অ্যাকাউন্ট তৈরি করে অর্ডার করুন' : 'Create Account & Checkout')}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
+
+            {!currentUser && (
+              <p className="text-[11px] text-center text-gray-500 font-medium">
+                {language === 'bn'
+                  ? 'ইতিমধ্যে অ্যাকাউন্ট আছে? '
+                  : 'Already registered? '}
+                <button
+                  type="button"
+                  onClick={() => onNavigate('login', { mode: 'login', redirect: 'checkout' })}
+                  className="text-[#176B45] font-bold underline hover:text-[#125436]"
+                >
+                  {language === 'bn' ? 'লগইন করুন' : 'Sign In here'}
+                </button>
+              </p>
+            )}
 
             <p className="text-[10px] text-center text-gray-400">
               {t('taxesIncluded')}

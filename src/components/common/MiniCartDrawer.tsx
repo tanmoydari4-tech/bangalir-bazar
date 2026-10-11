@@ -4,7 +4,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import { X, Plus, Minus, Trash2, ShoppingBag, ArrowRight, ShieldCheck, Tag } from 'lucide-react';
 
 interface MiniCartDrawerProps {
-  onNavigate: (page: string) => void;
+  onNavigate: (page: string, params?: Record<string, string>) => void;
 }
 
 export const MiniCartDrawer: React.FC<MiniCartDrawerProps> = ({ onNavigate }) => {
@@ -21,7 +21,8 @@ export const MiniCartDrawer: React.FC<MiniCartDrawerProps> = ({ onNavigate }) =>
     savingsTotal,
     selectedDeliveryArea,
     storeSettings,
-    appliedCoupon
+    appliedCoupon,
+    currentUser
   } = useStore();
   const { t, language } = useLanguage();
 
@@ -234,11 +235,15 @@ export const MiniCartDrawer: React.FC<MiniCartDrawerProps> = ({ onNavigate }) =>
                 <button
                   onClick={() => {
                     setIsMiniCartOpen(false);
-                    onNavigate('checkout');
+                    if (!currentUser) {
+                      onNavigate('login', { mode: 'register', redirect: 'checkout' });
+                    } else {
+                      onNavigate('checkout');
+                    }
                   }}
-                  className="py-2.5 px-3 bg-[#176B45] text-white font-bold text-xs rounded-xl hover:bg-[#125436] transition-colors flex items-center justify-center gap-1.5 shadow-sm"
+                  className="py-2.5 px-3 bg-[#176B45] text-white font-bold text-xs rounded-xl hover:bg-[#125436] transition-colors flex items-center justify-center gap-1.5 shadow-sm cursor-pointer"
                 >
-                  <span>{t('proceedToCheckout')}</span>
+                  <span>{currentUser ? t('proceedToCheckout') : (language === 'bn' ? 'অ্যাকাউন্ট তৈরি ও চেকআউট' : 'Register & Checkout')}</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>

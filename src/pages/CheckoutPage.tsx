@@ -84,6 +84,71 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
     );
   }
 
+  // Mandatory Authentication Gate: At first create account, next login, then order any product
+  if (!currentUser) {
+    return (
+      <div className="max-w-lg mx-auto px-4 py-14 space-y-6">
+        <div className="bg-white rounded-3xl border border-[#E5EAE5] p-6 sm:p-8 shadow-sm text-center space-y-6">
+          <div className="w-16 h-16 bg-gradient-to-br from-[#176B45] to-[#4FA86B] rounded-3xl text-white flex items-center justify-center mx-auto shadow-md">
+            <Lock className="w-8 h-8 text-[#FFD166]" />
+          </div>
+
+          <div className="space-y-2">
+            <span className="text-[11px] font-black tracking-widest text-[#176B45] uppercase bg-green-50 px-3 py-1 rounded-full">
+              STEP 1: ACCOUNT REQUIRED
+            </span>
+            <h2 className="text-2xl font-black text-[#252B27]">
+              {language === 'bn' ? 'অর্ডার করতে প্রথমে অ্যাকাউন্ট তৈরি বা লগইন করুন' : 'Create Account or Sign In to Place Order'}
+            </h2>
+            <p className="text-xs sm:text-sm text-gray-500 max-w-sm mx-auto leading-relaxed">
+              {language === 'bn'
+                ? 'আপনার ঝুড়িতে পণ্য প্রস্তুত আছে। ডেলিভারির ঠিকানা সংরক্ষণ এবং অর্ডার ট্র্যাকিংয়ের জন্য প্রথমে অ্যাকাউন্ট তৈরি করুন অথবা লগইন করুন।'
+                : 'Your grocery basket is saved. To ensure accurate doorstep delivery and real-time order tracking, please create an account or sign in first.'}
+            </p>
+          </div>
+
+          {/* Basket preview badge */}
+          <div className="p-3.5 bg-[#F7F9F5] rounded-2xl border border-[#E5EAE5] flex items-center justify-between text-xs">
+            <div className="text-left">
+              <span className="font-bold text-gray-900 block">
+                {cart.length} {language === 'bn' ? 'টি আইটেম ঝুড়িতে আছে' : 'Items in Basket'}
+              </span>
+              <span className="text-gray-500 text-[11px]">
+                {language === 'bn' ? 'লগইন করার পর ঝুড়ি অক্ষুণ্ণ থাকবে' : 'Basket will remain saved after sign in'}
+              </span>
+            </div>
+            <span className="text-base font-black text-[#176B45]">
+              ₹{cartTotal}
+            </span>
+          </div>
+
+          <div className="space-y-3 pt-2">
+            <button
+              onClick={() => onNavigate('login', { mode: 'register', redirect: 'checkout' })}
+              className="w-full py-3.5 bg-[#176B45] hover:bg-[#125436] text-white font-extrabold text-xs sm:text-sm rounded-xl transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <Plus className="w-4 h-4 text-[#FFD166]" />
+              <span>{language === 'bn' ? 'নতুন অ্যাকাউন্ট তৈরি করুন (Create Account)' : 'Create New Account First'}</span>
+            </button>
+
+            <button
+              onClick={() => onNavigate('login', { mode: 'login', redirect: 'checkout' })}
+              className="w-full py-3 bg-white hover:bg-gray-50 text-[#176B45] border-2 border-[#176B45] font-extrabold text-xs sm:text-sm rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <span>{language === 'bn' ? 'ইতিমধ্যে অ্যাকাউন্ট আছে? সাইন ইন করুন (Sign In)' : 'Already Have an Account? Sign In'}</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+
+          <div className="pt-2 border-t border-gray-100 flex items-center justify-center gap-2 text-[11px] text-gray-400">
+            <ShieldCheck className="w-4 h-4 text-emerald-600" />
+            <span>100% Verified Sourcing & Secure Checkout</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const handlePlaceOrder = () => {
     setErrorMessage(null);
 

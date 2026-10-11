@@ -157,7 +157,13 @@ export function AppContent() {
           <CustomerDashboardPage initialTab="addresses" onNavigate={navigate} />
         )}
 
-        {currentPage === 'login' && <CustomerLoginPage onNavigate={navigate} />}
+        {currentPage === 'login' && (
+          <CustomerLoginPage
+            redirectTo={pageParams.redirect}
+            initialMode={pageParams.mode as 'login' | 'register'}
+            onNavigate={navigate}
+          />
+        )}
 
         {currentPage === 'wishlist' && <WishlistPage onNavigate={navigate} />}
 

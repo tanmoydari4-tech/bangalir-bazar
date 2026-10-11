@@ -4,14 +4,20 @@ import { useLanguage } from '../context/LanguageContext';
 import { ShieldCheck, User, Lock, Mail, Phone, CheckCircle2 } from 'lucide-react';
 
 interface CustomerLoginPageProps {
+  redirectTo?: string;
+  initialMode?: 'login' | 'register';
   onNavigate: (page: string, params?: Record<string, string>) => void;
 }
 
-export const CustomerLoginPage: React.FC<CustomerLoginPageProps> = ({ onNavigate }) => {
+export const CustomerLoginPage: React.FC<CustomerLoginPageProps> = ({
+  redirectTo,
+  initialMode = 'login',
+  onNavigate
+}) => {
   const { login, registerUser } = useStore();
   const { t } = useLanguage();
 
-  const [mode, setMode] = useState<'login' | 'register'>('login');
+  const [mode, setMode] = useState<'login' | 'register'>(initialMode || 'login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
@@ -31,6 +37,8 @@ export const CustomerLoginPage: React.FC<CustomerLoginPageProps> = ({ onNavigate
       login(email.trim(), isAdmin ? 'admin' : 'customer');
       if (isAdmin) {
         onNavigate('admin');
+      } else if (redirectTo) {
+        onNavigate(redirectTo);
       } else {
         onNavigate('account');
       }
@@ -39,8 +47,16 @@ export const CustomerLoginPage: React.FC<CustomerLoginPageProps> = ({ onNavigate
         setError('Please fill in all registration fields.');
         return;
       }
+      if (!/^\d{10}$/.test(mobile.trim())) {
+        setError('Please enter a valid 10-digit mobile number.');
+        return;
+      }
       registerUser(name.trim(), email.trim(), mobile.trim());
-      onNavigate('account');
+      if (redirectTo) {
+        onNavigate(redirectTo);
+      } else {
+        onNavigate('account');
+      }
     }
   };
 
@@ -62,6 +78,17 @@ export const CustomerLoginPage: React.FC<CustomerLoginPageProps> = ({ onNavigate
         <p className="text-xs text-gray-500">
           {mode === 'login' ? t('loginSubtitle') : t('registerSubtitle')}
         </p>
+
+        {redirectTo === 'checkout' && (
+          <div className="mt-3 p-3 bg-amber-50 border border-amber-200 text-amber-900 rounded-2xl text-xs flex items-center gap-2.5 text-left font-medium">
+            <ShieldCheck className="w-5 h-5 text-amber-700 shrink-0" />
+            <span>
+              {mode === 'register'
+                ? 'Create your account first with your name and mobile number to proceed with your grocery order.'
+                : 'Please sign in to your account to complete your grocery order and doorstep delivery.'}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Main Form Box */}
