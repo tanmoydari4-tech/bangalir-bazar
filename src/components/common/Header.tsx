@@ -358,6 +358,7 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                         onClick={() => {
                           setIsAccountMenuOpen(false);
                           logout();
+                          onNavigate('home');
                         }}
                         className="w-full px-4 py-2 text-left text-xs text-red-600 hover:bg-red-50 flex items-center gap-2.5 font-medium"
                       >
@@ -617,13 +618,26 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                   )}
                 </button>
                 {currentUser ? (
-                  <button
-                    onClick={() => { setIsMobileMenuOpen(false); onNavigate('account'); }}
-                    className="w-full text-left p-2.5 rounded-xl font-bold text-xs text-gray-800 hover:bg-green-50 flex items-center gap-2"
-                  >
-                    <UserIcon className="w-4 h-4 text-emerald-600" />
-                    <span>{t('myAccount')} ({currentUser.name.split(' ')[0]})</span>
-                  </button>
+                  <div className="space-y-1">
+                    <button
+                      onClick={() => { setIsMobileMenuOpen(false); onNavigate('account'); }}
+                      className="w-full text-left p-2.5 rounded-xl font-bold text-xs text-gray-800 hover:bg-green-50 flex items-center gap-2"
+                    >
+                      <UserIcon className="w-4 h-4 text-emerald-600" />
+                      <span>{t('myAccount')} ({currentUser.name.split(' ')[0]})</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        logout();
+                        onNavigate('home');
+                      }}
+                      className="w-full text-left p-2.5 rounded-xl font-bold text-xs text-red-600 hover:bg-rose-50 flex items-center gap-2"
+                    >
+                      <LogOut className="w-4 h-4 text-red-500" />
+                      <span>{t('logout')}</span>
+                    </button>
+                  </div>
                 ) : (
                   <button
                     onClick={() => { setIsMobileMenuOpen(false); onNavigate('login'); }}

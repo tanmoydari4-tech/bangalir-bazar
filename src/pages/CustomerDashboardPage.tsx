@@ -56,13 +56,31 @@ export const CustomerDashboardPage: React.FC<CustomerDashboardPageProps> = ({
   if (!currentUser) {
     return (
       <div className="max-w-md mx-auto py-16 px-4 text-center space-y-4">
-        <h2 className="text-xl font-bold">Please sign in to view your account</h2>
-        <button
-          onClick={() => onNavigate('login')}
-          className="px-5 py-2.5 bg-[#176B45] text-white rounded-xl text-xs font-bold"
-        >
-          {t('login')}
-        </button>
+        <div className="w-16 h-16 bg-gradient-to-br from-[#176B45] to-[#4FA86B] rounded-3xl text-white flex items-center justify-center mx-auto shadow-md">
+          <User className="w-8 h-8 text-[#FFD166]" />
+        </div>
+        <h2 className="text-xl font-bold text-gray-900">
+          {language === 'bn' ? 'অ্যাকাউন্ট দেখতে লগইন করুন' : 'Sign in to view your account'}
+        </h2>
+        <p className="text-xs text-gray-500 max-w-sm mx-auto">
+          {language === 'bn'
+            ? 'আপনার প্রোফাইল, অর্ডার হিস্ট্রি বা অ্যাড্রেস দেখতে পুনরায় লগইন করুন।'
+            : 'Please sign in or create an account to view your orders, addresses, and saved profile.'}
+        </p>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-2 pt-2">
+          <button
+            onClick={() => onNavigate('login', { mode: 'login', redirect: 'account' })}
+            className="w-full sm:w-auto px-6 py-2.5 bg-[#176B45] hover:bg-[#125436] text-white rounded-xl text-xs font-bold transition-all shadow-md"
+          >
+            {t('login')}
+          </button>
+          <button
+            onClick={() => onNavigate('login', { mode: 'register', redirect: 'account' })}
+            className="w-full sm:w-auto px-6 py-2.5 bg-white border border-[#176B45] text-[#176B45] hover:bg-gray-50 rounded-xl text-xs font-bold transition-all"
+          >
+            {t('register')}
+          </button>
+        </div>
       </div>
     );
   }
