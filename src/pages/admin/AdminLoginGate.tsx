@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useStore } from '../../context/StoreContext';
 import { useLanguage } from '../../context/LanguageContext';
-import { ShieldCheck, Lock, Mail, ArrowRight, ArrowLeft, CheckCircle2, AlertCircle, Database, Sparkles } from 'lucide-react';
-import { SUPABASE_PROJECT_ID } from '../../services/supabase';
+import { ShieldCheck, Lock, Mail, ArrowRight, ArrowLeft, AlertCircle } from 'lucide-react';
 
 interface AdminLoginGateProps {
   onSuccess: () => void;
@@ -33,15 +32,6 @@ export const AdminLoginGate: React.FC<AdminLoginGateProps> = ({ onSuccess, onNav
       setIsLoading(false);
       onSuccess();
     }, 400);
-  };
-
-  const handleQuickAdminLogin = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      login('admin@bangalirbazar.com', 'admin');
-      setIsLoading(false);
-      onSuccess();
-    }, 250);
   };
 
   return (
@@ -126,32 +116,6 @@ export const AdminLoginGate: React.FC<AdminLoginGateProps> = ({ onSuccess, onNav
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
-
-          {/* Quick Demo Login Button */}
-          <div className="pt-2">
-            <button
-              type="button"
-              onClick={handleQuickAdminLogin}
-              className="w-full py-2.5 bg-[#FFD166] hover:bg-yellow-300 text-[#252B27] rounded-xl font-extrabold text-xs shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
-            >
-              <Sparkles className="w-4 h-4" />
-              <span>Instant 1-Click Admin Login (Demo)</span>
-            </button>
-          </div>
-
-          {/* Capabilities note */}
-          <div className="p-3.5 bg-gray-50 rounded-2xl border border-gray-200 text-[11px] text-gray-600 space-y-1.5">
-            <div className="font-bold text-gray-800 flex items-center gap-1.5">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Full Admin Control Granted On Login:</span>
-            </div>
-            <ul className="list-disc pl-4 space-y-0.5 text-gray-500">
-              <li>Change store name, tagline, announcement bar, and hero banner</li>
-              <li>Add, update, or remove products and adjust prices in bulk</li>
-              <li>Manage delivery PIN codes, charges, and delivery slots</li>
-              <li>Sync with Supabase cloud database ({SUPABASE_PROJECT_ID})</li>
-            </ul>
-          </div>
         </div>
 
         {/* Return to store link */}
