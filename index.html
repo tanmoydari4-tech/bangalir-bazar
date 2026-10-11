@@ -17,22 +17,27 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script>
-      // Seamless GitHub Pages root router:
-      // If served as static HTML without a dev server (e.g. from GitHub Pages root),
-      // redirect immediately to the bundled distribution in ./dist/
       (function() {
-        try {
-          var isGitHub = window.location.hostname.indexOf('github.io') !== -1;
-          var isStaticHost = !window.location.port && window.location.hostname.indexOf('run.app') === -1 && window.location.hostname.indexOf('localhost') === -1;
-          if (isGitHub || isStaticHost) {
-            var path = window.location.pathname;
-            if (path.indexOf('/dist') === -1 && path.indexOf('/docs') === -1) {
-              var target = path.endsWith('/') ? path + 'dist/' : path + '/dist/';
-              window.location.replace(target + window.location.search + window.location.hash);
-            }
-          }
-        } catch (e) {
-          console.error(e);
+        // If bundle is already in the document (like in dist/index.html), do nothing
+        if (document.querySelector('script[src*="assets/index.js"]')) {
+          return;
+        }
+        var isGitHub = window.location.hostname.indexOf('github.io') !== -1;
+        var isStaticHost = !window.location.port && window.location.hostname.indexOf('run.app') === -1 && window.location.hostname.indexOf('localhost') === -1;
+        if (isGitHub || isStaticHost) {
+          // Inject production stylesheet
+          var link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.crossOrigin = 'anonymous';
+          link.href = './assets/index.css';
+          document.head.appendChild(link);
+
+          // Inject production module bundle
+          var script = document.createElement('script');
+          script.type = 'module';
+          script.crossOrigin = 'anonymous';
+          script.src = './assets/index.js';
+          document.head.appendChild(script);
         }
       })();
     </script>

@@ -36,13 +36,24 @@ jobs:
         run: npm run build
 
       - name: Setup Pages
+        id: pages
         uses: actions/configure-pages@v4
+        continue-on-error: true
 
       - name: Upload artifact
+        if: steps.pages.outcome == 'success'
         uses: actions/upload-pages-artifact@v3
         with:
           path: './dist'
 
       - name: Deploy to GitHub Pages
+        if: steps.pages.outcome == 'success'
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Deployment Information
+        if: steps.pages.outcome != 'success'
+        run: |
+          echo "GitHub Pages is configured with 'Deploy from a branch' (Branch: main, Folder: root)."
+          echo "Your pre-built site and assets in the main branch are automatically served by GitHub Pages directly!"
+          echo "To enable direct GitHub Actions deployment, go to repo Settings -> Pages -> Source and select 'GitHub Actions'."
