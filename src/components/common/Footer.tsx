@@ -28,7 +28,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         
         {/* Value Propositions Ribbon */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pb-10 border-b border-gray-800 text-xs">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 pb-10 border-b border-gray-800 text-xs">
           <div className="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/5">
             <Truck className="w-6 h-6 text-[#4FA86B] shrink-0" />
             <div>
@@ -48,13 +48,6 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             <div>
               <div className="font-bold text-white">{t('bestPrices')}</div>
               <div className="text-[11px] text-gray-400">{t('bestPricesDesc')}</div>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/5">
-            <RotateCcw className="w-6 h-6 text-[#FFD166] shrink-0" />
-            <div>
-              <div className="font-bold text-white">{t('easyReturns')}</div>
-              <div className="text-[11px] text-gray-400">{t('easyReturnsDesc')}</div>
             </div>
           </div>
         </div>

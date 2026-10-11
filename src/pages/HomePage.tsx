@@ -375,7 +375,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-center max-w-2xl mx-auto">
             <div className="p-5 rounded-2xl bg-[#F7F9F5] border border-[#E5EAE5] space-y-2.5">
               <div className="w-12 h-12 bg-green-100 text-[#176B45] rounded-2xl flex items-center justify-center mx-auto">
                 <Truck className="w-6 h-6" />
@@ -397,18 +397,6 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
                 {language === 'bn'
                   ? 'সরাসরি প্রস্তুতকারক ও কৃষকদের থেকে সংগ্রহ করায় অপ্রয়োজনীয় মধ্যস্বত্বভোগী নেই।'
                   : 'Direct sourcing ensures genuine savings passed on to your monthly grocery budget.'}
-              </p>
-            </div>
-
-            <div className="p-5 rounded-2xl bg-[#F7F9F5] border border-[#E5EAE5] space-y-2.5">
-              <div className="w-12 h-12 bg-emerald-100 text-emerald-800 rounded-2xl flex items-center justify-center mx-auto">
-                <RotateCcw className="w-6 h-6" />
-              </div>
-              <h4 className="font-bold text-sm text-gray-900">{t('easyReturns')}</h4>
-              <p className="text-xs text-gray-600">
-                {language === 'bn'
-                  ? 'পণ্য পছন্দ না হলে কোনো প্রশ্ন ছাড়াই ডেলিভারির সময় তাত্ক্ষণিক ফেরত নেওয়ার নিশ্চয়তা।'
-                  : 'Hassle-free return policy at delivery doorstep if items don’t meet your freshness standard.'}
               </p>
             </div>
           </div>

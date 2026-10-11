@@ -44,16 +44,6 @@ export const CustomerLoginPage: React.FC<CustomerLoginPageProps> = ({ onNavigate
     }
   };
 
-  const handleQuickLogin = (role: 'customer' | 'admin') => {
-    if (role === 'admin') {
-      login('admin@bangalirbazar.com', 'admin');
-      onNavigate('admin');
-    } else {
-      login('tanmoydari4@gmail.com', 'customer');
-      onNavigate('account');
-    }
-  };
-
   return (
     <div className="max-w-md mx-auto px-4 py-12 space-y-6">
       
@@ -174,29 +164,6 @@ export const CustomerLoginPage: React.FC<CustomerLoginPageProps> = ({ onNavigate
             {mode === 'login' ? t('login') : t('register')}
           </button>
         </form>
-
-        {/* Demo Fast Login helper */}
-        <div className="pt-4 border-t border-gray-100 space-y-2.5">
-          <p className="text-[11px] text-center font-bold text-gray-400 uppercase tracking-wider">
-            {t('quickDemoLogin')}
-          </p>
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              type="button"
-              onClick={() => handleQuickLogin('customer')}
-              className="p-2.5 bg-gray-50 hover:bg-gray-100 rounded-xl border border-gray-200 text-[11px] font-bold text-gray-700 transition-colors"
-            >
-              Customer Demo
-            </button>
-            <button
-              type="button"
-              onClick={() => handleQuickLogin('admin')}
-              className="p-2.5 bg-green-50 hover:bg-green-100 rounded-xl border border-green-200 text-[11px] font-bold text-[#176B45] transition-colors"
-            >
-              Admin Demo ⚙
-            </button>
-          </div>
-        </div>
       </div>
 
     </div>
