@@ -95,43 +95,45 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
     <header className="sticky top-0 z-40 bg-white border-b border-[#E5EAE5] shadow-xs">
       {/* Main Header Bar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3">
-        <div className="flex items-center justify-between gap-3 sm:gap-6">
+        <div className="flex items-center justify-between gap-2 sm:gap-6">
           
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="lg:hidden p-2 text-gray-700 hover:bg-gray-100 rounded-xl"
-            aria-label="Open navigation menu"
-          >
-            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+          {/* Mobile Menu Button + Brand Logo */}
+          <div className="flex items-center gap-1.5 sm:gap-3 min-w-0">
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="lg:hidden p-1.5 sm:p-2 text-gray-700 hover:bg-gray-100 rounded-xl shrink-0"
+              aria-label="Open navigation menu"
+            >
+              {isMobileMenuOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6" /> : <Menu className="w-5 h-5 sm:w-6 sm:h-6" />}
+            </button>
 
-          {/* Brand Logo & Tagline */}
-          <div
-            onClick={() => onNavigate('home')}
-            className="flex items-center gap-2.5 cursor-pointer shrink-0 select-none group"
-          >
-            {/* Custom Brand SVG Logo with Fresh Leaf & Grocery Basket */}
-            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-[#176B45] to-[#4FA86B] p-2 flex items-center justify-center shadow-md shadow-green-900/10 group-hover:scale-105 transition-transform">
-              <svg viewBox="0 0 24 24" fill="none" className="w-full h-full text-white" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-                <line x1="3" y1="6" x2="21" y2="6" />
-                <path d="M16 10a4 4 0 0 1-8 0" stroke="#FFD166" strokeWidth="2.5" />
-                <path d="M12 2v4" stroke="#FFD166" />
-              </svg>
-            </div>
-            <div>
-              <div className="flex items-center gap-1.5">
-                <span className="font-extrabold text-lg sm:text-xl text-[#176B45] tracking-tight group-hover:text-[#125436] transition-colors">
-                  {storeName}
-                </span>
-                <span className="bg-[#FFD166]/30 text-[#176B45] text-[10px] font-bold px-1.5 py-0.5 rounded-sm uppercase tracking-wide">
-                  FRESH
-                </span>
+            {/* Brand Logo & Tagline */}
+            <div
+              onClick={() => onNavigate('home')}
+              className="flex items-center gap-2 sm:gap-2.5 cursor-pointer shrink-0 select-none group min-w-0"
+            >
+              {/* Custom Brand SVG Logo with Fresh Leaf & Grocery Basket */}
+              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-gradient-to-br from-[#176B45] to-[#4FA86B] p-1.5 sm:p-2 flex items-center justify-center shadow-md shadow-green-900/10 group-hover:scale-105 transition-transform shrink-0">
+                <svg viewBox="0 0 24 24" fill="none" className="w-full h-full text-white" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                  <line x1="3" y1="6" x2="21" y2="6" />
+                  <path d="M16 10a4 4 0 0 1-8 0" stroke="#FFD166" strokeWidth="2.5" />
+                  <path d="M12 2v4" stroke="#FFD166" />
+                </svg>
               </div>
-              <p className="text-[10px] sm:text-[11px] text-[#6B746D] hidden sm:block font-medium">
-                {language === 'bn' ? storeSettings.taglineBn : storeSettings.taglineEn}
-              </p>
+              <div className="min-w-0">
+                <div className="flex items-center gap-1 sm:gap-1.5">
+                  <span className="font-extrabold text-base sm:text-xl text-[#176B45] tracking-tight group-hover:text-[#125436] transition-colors truncate max-w-[125px] sm:max-w-none">
+                    {storeName}
+                  </span>
+                  <span className="bg-[#FFD166]/30 text-[#176B45] text-[9px] sm:text-[10px] font-black px-1.5 py-0.5 rounded-sm uppercase tracking-wide shrink-0">
+                    FRESH
+                  </span>
+                </div>
+                <p className="text-[10px] sm:text-[11px] text-[#6B746D] hidden sm:block font-medium truncate">
+                  {language === 'bn' ? storeSettings.taglineBn : storeSettings.taglineEn}
+                </p>
+              </div>
             </div>
           </div>
 
@@ -232,15 +234,16 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
           </div>
 
           {/* Right Action Icons */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
             {/* Language Switcher */}
             <LanguageToggle />
 
-            {/* Wishlist Button */}
+            {/* Wishlist Button - Hidden on mobile, shown on tablet/desktop (accessible via bottom nav) */}
             <button
               onClick={() => onNavigate('wishlist')}
-              className="p-2 sm:p-2.5 text-gray-700 hover:text-[#176B45] hover:bg-gray-100 rounded-xl relative transition-colors"
+              className="hidden sm:flex p-2 sm:p-2.5 text-gray-700 hover:text-[#176B45] hover:bg-gray-100 rounded-xl relative transition-colors"
               title={t('wishlist')}
+              aria-label={t('wishlist')}
             >
               <Heart className="w-5 h-5" />
               {wishlist.length > 0 && (
@@ -253,13 +256,14 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
             {/* Shopping Cart Button */}
             <button
               onClick={() => setIsMiniCartOpen(true)}
-              className="flex items-center gap-2.5 px-3 py-2 bg-[#176B45] hover:bg-[#125436] text-white rounded-xl shadow-xs transition-all group"
+              className="flex items-center gap-1.5 sm:gap-2.5 px-2.5 sm:px-3 py-1.5 sm:py-2 bg-[#176B45] hover:bg-[#125436] text-white rounded-xl shadow-xs transition-all group shrink-0"
               title={t('cart')}
+              aria-label={t('cart')}
             >
               <div className="relative">
-                <ShoppingBag className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5 group-hover:scale-110 transition-transform" />
                 {totalCartCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-[#FFD166] text-[#252B27] text-[10px] font-extrabold w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
+                  <span className="absolute -top-2 -right-2 bg-[#FFD166] text-[#252B27] text-[10px] font-extrabold min-w-4 h-4 px-1 rounded-full flex items-center justify-center shadow-xs">
                     {totalCartCount}
                   </span>
                 )}
@@ -274,8 +278,8 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
               </div>
             </button>
 
-            {/* Account / Login Dropdown */}
-            <div ref={accountRef} className="relative">
+            {/* Account / Login Dropdown - Hidden on mobile, shown on tablet/desktop */}
+            <div ref={accountRef} className="relative hidden sm:block">
               <button
                 onClick={() => setIsAccountMenuOpen(!isAccountMenuOpen)}
                 className="flex items-center gap-1.5 p-2 sm:px-3 sm:py-2 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors border border-transparent hover:border-[#E5EAE5]"
@@ -396,21 +400,21 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
         </div>
 
         {/* Mobile Search Input & Quick Location Bar */}
-        <div className="mt-2.5 sm:hidden space-y-2">
+        <div className="mt-2 sm:hidden space-y-1.5">
           {/* Quick PIN location chip for mobile */}
-          <div className="flex items-center justify-between px-1">
+          <div className="flex items-center justify-between px-0.5">
             <button
               onClick={() => setIsPinModalOpen(true)}
-              className="flex items-center gap-1.5 text-[11px] font-bold text-gray-700 active:text-[#176B45]"
+              className="flex items-center gap-1.5 text-[11px] font-bold text-gray-700 active:text-[#176B45] transition-colors"
             >
-              <MapPin className="w-3.5 h-3.5 text-[#176B45]" />
+              <MapPin className="w-3.5 h-3.5 text-[#176B45] shrink-0" />
               <span className="text-gray-500 font-medium">{t('deliverTo')}:</span>
               <span className="truncate max-w-[140px] text-gray-900 underline decoration-dotted underline-offset-2">
                 {selectedDeliveryArea ? (language === 'bn' ? selectedDeliveryArea.areaNameBn : selectedDeliveryArea.areaNameEn) : activePinCode}
               </span>
-              <ChevronDown className="w-3 h-3 text-gray-400" />
+              <ChevronDown className="w-3 h-3 text-gray-400 shrink-0" />
             </button>
-            <span className="text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full font-bold">
+            <span className="text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full font-bold shrink-0">
               ⚡ 30-45m
             </span>
           </div>
@@ -422,12 +426,12 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
               onChange={(e) => setSearchQuery(e.target.value)}
               onFocus={() => setIsSearchFocused(true)}
               placeholder={t('searchPlaceholder')}
-              className="w-full pl-9 pr-14 py-2 bg-[#F7F9F5] border border-[#E5EAE5] rounded-xl text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#176B45]"
+              className="w-full pl-9 pr-20 py-2 bg-[#F7F9F5] border border-[#E5EAE5] rounded-xl text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#176B45] focus:bg-white transition-all shadow-inner/5"
             />
-            <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
             <button
               type="submit"
-              className="absolute right-1 top-1/2 -translate-y-1/2 px-2.5 py-1 bg-[#176B45] text-white rounded-lg text-xs font-semibold active:scale-95 transition-transform"
+              className="absolute right-1 top-1/2 -translate-y-1/2 px-3 py-1 bg-[#176B45] text-white rounded-lg text-xs font-bold active:scale-95 transition-transform shadow-xs"
             >
               {t('searchButton')}
             </button>
@@ -598,6 +602,37 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                 >
                   {t('myOrders')}
                 </button>
+                <button
+                  onClick={() => { setIsMobileMenuOpen(false); onNavigate('wishlist'); }}
+                  className="w-full text-left p-2.5 rounded-xl font-bold text-xs text-gray-800 hover:bg-green-50 flex items-center justify-between"
+                >
+                  <div className="flex items-center gap-2">
+                    <Heart className="w-4 h-4 text-rose-500" />
+                    <span>{t('wishlist')}</span>
+                  </div>
+                  {wishlist.length > 0 && (
+                    <span className="bg-rose-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                      {wishlist.length}
+                    </span>
+                  )}
+                </button>
+                {currentUser ? (
+                  <button
+                    onClick={() => { setIsMobileMenuOpen(false); onNavigate('account'); }}
+                    className="w-full text-left p-2.5 rounded-xl font-bold text-xs text-gray-800 hover:bg-green-50 flex items-center gap-2"
+                  >
+                    <UserIcon className="w-4 h-4 text-emerald-600" />
+                    <span>{t('myAccount')} ({currentUser.name.split(' ')[0]})</span>
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => { setIsMobileMenuOpen(false); onNavigate('login'); }}
+                    className="w-full text-left p-2.5 rounded-xl font-bold text-xs text-white bg-[#176B45] hover:bg-[#125436] flex items-center justify-center gap-2 shadow-xs"
+                  >
+                    <UserIcon className="w-4 h-4" />
+                    <span>{t('login')}</span>
+                  </button>
+                )}
               </div>
 
               <div className="border-t border-gray-100 pt-3">
