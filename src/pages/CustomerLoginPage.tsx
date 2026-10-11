@@ -124,7 +124,7 @@ export const CustomerLoginPage: React.FC<CustomerLoginPageProps> = ({
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4" autoComplete="off">
           {mode === 'register' && (
             <>
               <div>
@@ -134,7 +134,8 @@ export const CustomerLoginPage: React.FC<CustomerLoginPageProps> = ({
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="Tanmoy Dari"
+                    placeholder=""
+                    autoComplete="off"
                     className="w-full pl-9 pr-3 py-2.5 border rounded-xl text-xs focus:ring-2 focus:ring-[#176B45] focus:outline-none"
                   />
                   <User className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -149,7 +150,8 @@ export const CustomerLoginPage: React.FC<CustomerLoginPageProps> = ({
                     maxLength={10}
                     value={mobile}
                     onChange={(e) => setMobile(e.target.value.replace(/[^0-9]/g, ''))}
-                    placeholder="9830123456"
+                    placeholder=""
+                    autoComplete="off"
                     className="w-full pl-9 pr-3 py-2.5 border rounded-xl text-xs font-mono focus:ring-2 focus:ring-[#176B45] focus:outline-none"
                   />
                   <Phone className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -165,7 +167,8 @@ export const CustomerLoginPage: React.FC<CustomerLoginPageProps> = ({
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
+                placeholder=""
+                autoComplete="off"
                 className="w-full pl-9 pr-3 py-2.5 border rounded-xl text-xs focus:ring-2 focus:ring-[#176B45] focus:outline-none"
               />
               <Mail className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -179,7 +182,8 @@ export const CustomerLoginPage: React.FC<CustomerLoginPageProps> = ({
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
+                placeholder=""
+                autoComplete="new-password"
                 className="w-full pl-9 pr-3 py-2.5 border rounded-xl text-xs focus:ring-2 focus:ring-[#176B45] focus:outline-none"
               />
               <Lock className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
