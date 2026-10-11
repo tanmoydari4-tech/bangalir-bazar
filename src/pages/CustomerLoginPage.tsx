@@ -100,7 +100,12 @@ export const CustomerLoginPage: React.FC<CustomerLoginPageProps> = ({
         <div className="flex bg-gray-100 p-1 rounded-2xl">
           <button
             type="button"
-            onClick={() => { setMode('login'); setError(null); }}
+            onClick={() => {
+              setMode('login');
+              setError(null);
+              setEmail('');
+              setPassword('');
+            }}
             className={`flex-1 py-2 text-xs font-extrabold rounded-xl transition-all ${
               mode === 'login' ? 'bg-white text-[#176B45] shadow-xs' : 'text-gray-600'
             }`}
@@ -109,7 +114,14 @@ export const CustomerLoginPage: React.FC<CustomerLoginPageProps> = ({
           </button>
           <button
             type="button"
-            onClick={() => { setMode('register'); setError(null); }}
+            onClick={() => {
+              setMode('register');
+              setError(null);
+              setEmail('');
+              setPassword('');
+              setName('');
+              setMobile('');
+            }}
             className={`flex-1 py-2 text-xs font-extrabold rounded-xl transition-all ${
               mode === 'register' ? 'bg-white text-[#176B45] shadow-xs' : 'text-gray-600'
             }`}
