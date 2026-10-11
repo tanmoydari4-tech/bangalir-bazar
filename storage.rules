@@ -1,0 +1,33 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    function isAdmin() {
+      return request.auth != null && 
+        (request.auth.token.admin == true || 
+         request.auth.token.email == 'admin@bangalirbazar.com');
+    }
+
+    // Product and Category Images
+    match /products/{imageId} {
+      allow read: if true;
+      allow write: if isAdmin() && 
+        request.resource.size < 5 * 1024 * 1024 &&
+        request.resource.contentType.matches('image/.*');
+    }
+
+    match /categories/{imageId} {
+      allow read: if true;
+      allow write: if isAdmin() && 
+        request.resource.size < 5 * 1024 * 1024 &&
+        request.resource.contentType.matches('image/.*');
+    }
+
+    match /banners/{imageId} {
+      allow read: if true;
+      allow write: if isAdmin() && 
+        request.resource.size < 10 * 1024 * 1024 &&
+        request.resource.contentType.matches('image/.*');
+    }
+  }
+}

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#176B45" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <title>Bangalir Bazar - Premium Grocery Store</title>
+    <meta name="description" content="Fresh Essentials. Better Living. Delivered. Shop farm-fresh vegetables, dairy, pantry staples, spices, and household essentials." />
+    <meta property="og:title" content="Bangalir Bazar - Premium Grocery Store" />
+    <meta property="og:description" content="Fresh Essentials. Better Living. Delivered. Shop farm-fresh vegetables, dairy, pantry staples, spices, and household essentials." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+      // Seamless GitHub Pages root router:
+      // If served as static HTML without a dev server (e.g. from GitHub Pages root),
+      // redirect immediately to the bundled distribution in ./dist/
+      (function() {
+        try {
+          var isGitHub = window.location.hostname.indexOf('github.io') !== -1;
+          var isStaticHost = !window.location.port && window.location.hostname.indexOf('run.app') === -1 && window.location.hostname.indexOf('localhost') === -1;
+          if (isGitHub || isStaticHost) {
+            var path = window.location.pathname;
+            if (path.indexOf('/dist') === -1 && path.indexOf('/docs') === -1) {
+              var target = path.endsWith('/') ? path + 'dist/' : path + '/dist/';
+              window.location.replace(target + window.location.search + window.location.hash);
+            }
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      })();
+    </script>
+  </head>
+  <body class="bg-[#F7F9F5] text-[#252B27] antialiased">
+    <div id="root">
+      <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; font-family: sans-serif; background-color: #F7F9F5;">
+        <div style="text-align: center; padding: 24px;">
+          <div style="width: 48px; height: 48px; border-radius: 50%; border: 4px solid #176B45; border-top-color: transparent; animation: spin 1s linear infinite; margin: 0 auto 16px;"></div>
+          <h2 style="margin: 0; color: #176B45; font-size: 18px; font-weight: 700;">বাঙালির বাজার • Bangalir Bazar</h2>
+          <p style="margin: 8px 0 0; color: #666; font-size: 13px;">Loading store...</p>
+        </div>
+        <style>
+          @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        </style>
+      </div>
+    </div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

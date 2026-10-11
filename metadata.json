@@ -1,0 +1,6 @@
+{
+  "name": "Bangalir Bazar - Premium Grocery Store",
+  "description": "Fresh Essentials. Better Living. Delivered. Shop farm-fresh vegetables, dairy, pantry staples, spices, and household essentials.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

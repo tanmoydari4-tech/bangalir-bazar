@@ -1,0 +1,80 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to check if user is admin
+    function isAdmin() {
+      return request.auth != null && 
+        (request.auth.token.admin == true || 
+         request.auth.token.email == 'admin@bangalirbazar.com');
+    }
+
+    // Public products catalogue (Read: All, Write: Admin only)
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Public product categories (Read: All, Write: Admin only)
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Serviceable delivery areas & time slots (Read: All, Write: Admin only)
+    match /deliveryAreas/{areaId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /deliverySlots/{slotId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Active coupons (Read: All, Write: Admin only)
+    match /coupons/{couponId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Customer private profiles & saved addresses
+    match /users/{userId} {
+      allow read, write: if request.auth != null && (request.auth.uid == userId || isAdmin());
+      
+      match /addresses/{addressId} {
+        allow read, write: if request.auth != null && (request.auth.uid == userId || isAdmin());
+      }
+    }
+
+    // Customer Orders
+    match /orders/{orderId} {
+      // Customers can read their own orders; admins can read all
+      allow read: if request.auth != null && 
+        (resource.data.userId == request.auth.uid || isAdmin());
+      
+      // Order creation requires authentic user or guest session
+      allow create: if request.auth != null;
+
+      // Status updates and assignment restricted to admin
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Inventory Movements (Admin audit trail only)
+    match /inventoryMovements/{movementId} {
+      allow read, write: if isAdmin();
+    }
+
+    // Customer Enquiries & Tickets (Submit: All, Manage: Admin)
+    match /enquiries/{enquiryId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Store & Homepage settings
+    match /storeSettings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bangalir Bazar - Redirecting...</title>
+    <script>
+      (function() {
+        var path = window.location.pathname;
+        var repoMatch = path.match(/^\/([^\/]+)/);
+        var repo = repoMatch ? '/' + repoMatch[1] : '';
+        if (path.indexOf('/dist') !== -1) {
+          window.location.replace(repo + '/dist/' + window.location.search + window.location.hash);
+        } else if (path.indexOf('/docs') !== -1) {
+          window.location.replace(repo + '/docs/' + window.location.search + window.location.hash);
+        } else {
+          window.location.replace(repo + '/dist/' + window.location.search + window.location.hash);
+        }
+      })();
+    </script>
+  </head>
+  <body style="font-family: sans-serif; text-align: center; padding: 50px; background-color: #F7F9F5; color: #252B27;">
+    <h2 style="color: #176B45;">বাঙালির বাজার • Bangalir Bazar</h2>
+    <p>Redirecting to store...</p>
+  </body>
+</html>
