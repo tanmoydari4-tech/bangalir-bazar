@@ -4,13 +4,16 @@ import { useLanguage } from '../../context/LanguageContext';
 import { Users, Search, Mail, Phone, ShoppingBag, MapPin } from 'lucide-react';
 
 export const AdminCustomers: React.FC = () => {
-  const { currentUser, orders } = useStore();
+  const { registeredUsers, currentUser, orders } = useStore();
   const [search, setSearch] = useState('');
 
-  // Extract unique customers from user & order records
-  const registeredUsers = currentUser ? [currentUser] : [];
+  // List all registered customer accounts
+  const allUsers = [...registeredUsers];
+  if (currentUser && !allUsers.some(u => u.id === currentUser.id)) {
+    allUsers.push(currentUser);
+  }
 
-  const customerList = registeredUsers.map(u => {
+  const customerList = allUsers.map(u => {
     const userOrders = orders.filter(o => o.userId === u.id || o.customerSnapshot.email === u.email);
     const totalSpent = userOrders.filter(o => o.orderStatus !== 'Cancelled').reduce((s, o) => s + o.total, 0);
 

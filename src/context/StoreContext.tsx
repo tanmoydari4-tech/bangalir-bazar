@@ -91,9 +91,20 @@ interface StoreContextType {
 
   // User & Auth
   currentUser: User | null;
-  login: (email: string, role?: 'customer' | 'admin') => boolean;
+  registeredUsers: User[];
+  login: (
+    identifier: string,
+    passwordOrRole?: string,
+    role?: 'customer' | 'admin'
+  ) => { success: boolean; message?: string; user?: User };
   logout: () => void;
-  registerUser: (name: string, email: string, mobile: string) => User;
+  registerUser: (
+    name: string,
+    email: string,
+    mobile: string,
+    password?: string
+  ) => { success: boolean; user?: User; message?: string };
+  getUserByIdentifier: (identifier: string) => User | undefined;
   addAddress: (address: Omit<Address, 'id' | 'userId'>) => Address;
   deleteAddress: (id: string) => void;
   setDefaultAddress: (id: string) => void;
@@ -650,61 +661,88 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }));
   };
 
-  // User management: Preserves exact registered name, mobile, and saved addresses
-  const login = (email: string, role: 'customer' | 'admin' = 'customer'): boolean => {
-    const cleanEmail = email.trim().toLowerCase();
-    const isAdmin = role === 'admin' || cleanEmail.includes('admin') || cleanEmail === 'admin@bangalirbazar.com';
+  // Helper: Find registered customer by email or mobile
+  const getUserByIdentifier = (identifier: string): User | undefined => {
+    const cleanId = identifier.trim().toLowerCase();
+    const cleanDigits = identifier.replace(/\D/g, '');
+    const cleanMobile = cleanDigits.length >= 10 ? cleanDigits.slice(-10) : '';
+
+    return registeredUsers.find(u => {
+      const uEmail = u.email ? u.email.trim().toLowerCase() : '';
+      const uDigits = u.mobile ? u.mobile.replace(/\D/g, '') : '';
+      const uMobile = uDigits.length >= 10 ? uDigits.slice(-10) : uDigits;
+
+      if (uEmail && uEmail === cleanId) return true;
+      if (cleanMobile && uMobile && uMobile === cleanMobile) return true;
+      return false;
+    });
+  };
+
+  // User management: STRICT - create account na kore kono user login korte parbe na!
+  const login = (
+    identifier: string,
+    passwordOrRole?: string,
+    role?: 'customer' | 'admin'
+  ): { success: boolean; message?: string; user?: User } => {
+    const cleanId = identifier.trim().toLowerCase();
+    const isAdmin =
+      passwordOrRole === 'admin' ||
+      role === 'admin' ||
+      cleanId === 'admin@bangalirbazar.com' ||
+      cleanId.includes('admin');
+
     if (isAdmin) {
-      setCurrentUser({
+      const adminUser: User = {
         id: 'usr-admin-01',
         name: 'Store Administrator',
-        email: email.trim() || 'admin@bangalirbazar.com',
+        email: cleanId || 'admin@bangalirbazar.com',
         mobile: '9830000000',
         role: 'admin',
         createdAt: '2026-01-01T00:00:00Z',
         addresses: []
-      });
-      return true;
-    }
-
-    // Customer login: look up the user's saved registration profile
-    const registered = registeredUsers.find(u => u.email.trim().toLowerCase() === cleanEmail);
-    if (registered) {
-      setCurrentUser(registered);
-      return true;
-    }
-
-    // Fallback: restore customer profile from any existing orders placed by this email
-    const prevOrder = orders.find(o => o.customerSnapshot?.email?.trim().toLowerCase() === cleanEmail);
-    if (prevOrder && prevOrder.customerSnapshot) {
-      const restoredUser: User = {
-        id: prevOrder.userId || `usr-${Date.now()}`,
-        name: prevOrder.customerSnapshot.name || cleanEmail.split('@')[0],
-        email: email.trim(),
-        mobile: prevOrder.customerSnapshot.mobile || '',
-        role: 'customer',
-        createdAt: prevOrder.createdAt || new Date().toISOString(),
-        addresses: prevOrder.deliveryAddress ? [prevOrder.deliveryAddress] : []
       };
-      setRegisteredUsers(prev => [restoredUser, ...prev]);
-      setCurrentUser(restoredUser);
-      return true;
+      setCurrentUser(adminUser);
+      return { success: true, message: 'Logged in as Admin', user: adminUser };
     }
 
-    // If logging in with an email not yet in registeredUsers, create a clean profile without dummy overrides
-    const fallbackName = email.split('@')[0] || 'Customer';
-    const newUser: User = {
-      id: `usr-${Date.now()}`,
-      name: fallbackName,
-      email: email.trim(),
-      mobile: '',
-      role: 'customer',
-      createdAt: new Date().toISOString(),
-      addresses: []
+    // Customer login: look up strictly in registeredUsers!
+    const registered = getUserByIdentifier(identifier);
+
+    if (!registered) {
+      // STRICT REQUIREMENT: No account found -> User CANNOT log in without creating an account first!
+      return {
+        success: false,
+        message: 'কোনো অ্যাকাউন্ট পাওয়া যায়নি! অ্যাকাউন্ট তৈরি না করে কোনো ইউজার লগইন করতে পারবেন না। অনুগ্রহ করে আগে "অ্যাকাউন্ট তৈরি করুন (Register)" করুন।'
+      };
+    }
+
+    // If registered user has a password set, verify it
+    const enteredPassword = (passwordOrRole && passwordOrRole !== 'admin' && passwordOrRole !== 'customer')
+      ? passwordOrRole.trim()
+      : undefined;
+
+    if (registered.password) {
+      if (!enteredPassword) {
+        return {
+          success: false,
+          message: 'অনুগ্রহ করে পাসওয়ার্ড লিখুন।'
+        };
+      }
+      if (registered.password !== enteredPassword) {
+        return {
+          success: false,
+          message: 'ভুল পাসওয়ার্ড! অনুগ্রহ করে সঠিক পাসওয়ার্ড দিন।'
+        };
+      }
+    }
+
+    // Account exists and credentials match!
+    setCurrentUser(registered);
+    return {
+      success: true,
+      user: registered,
+      message: 'সফলভাবে লগইন হয়েছে!'
     };
-    setRegisteredUsers(prev => [newUser, ...prev]);
-    setCurrentUser(newUser);
-    return true;
   };
 
   const logout = () => {
@@ -712,25 +750,72 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     localStorage.removeItem(STORAGE_KEYS.USER);
   };
 
-  const registerUser = (name: string, email: string, mobile: string): User => {
+  // Register user: Creates an account and stores credentials in registeredUsers
+  const registerUser = (
+    name: string,
+    email: string,
+    mobile: string,
+    password?: string
+  ): { success: boolean; user?: User; message?: string } => {
+    const cleanName = name.trim();
     const cleanEmail = email.trim().toLowerCase();
-    const existing = registeredUsers.find(u => u.email.trim().toLowerCase() === cleanEmail);
-    const userToSave: User = {
-      id: existing?.id || `usr-${Date.now()}`,
-      name: name.trim(),
-      email: email.trim(),
+    const cleanDigits = mobile.replace(/\D/g, '');
+    const cleanMobile = cleanDigits.length >= 10 ? cleanDigits.slice(-10) : cleanDigits;
+    const cleanPassword = password ? password.trim() : '';
+
+    if (!cleanName) {
+      return { success: false, message: 'অনুগ্রহ করে আপনার পুরো নাম লিখুন।' };
+    }
+    if (!cleanEmail || !cleanEmail.includes('@')) {
+      return { success: false, message: 'অনুগ্রহ করে একটি সঠিক ইমেইল ঠিকানা দিন।' };
+    }
+    if (cleanMobile.length !== 10) {
+      return { success: false, message: 'অনুগ্রহ করে একটি সঠিক ১০ সংখ্যার মোবাইল নম্বর দিন।' };
+    }
+    if (!cleanPassword || cleanPassword.length < 4) {
+      return { success: false, message: 'পাসওয়ার্ড কমপক্ষে ৪ অক্ষরের হতে হবে।' };
+    }
+
+    // Check duplicate email
+    const duplicateEmail = registeredUsers.find(u => u.email.trim().toLowerCase() === cleanEmail);
+    if (duplicateEmail) {
+      return {
+        success: false,
+        message: 'এই ইমেইল দিয়ে ইতিমধ্যেই একটি অ্যাকাউন্ট তৈরি রয়েছে। অনুগ্রহ করে সরাসরি লগইন করুন।'
+      };
+    }
+
+    // Check duplicate mobile
+    const duplicateMobile = registeredUsers.find(u => {
+      const uDigits = u.mobile ? u.mobile.replace(/\D/g, '') : '';
+      return uDigits.slice(-10) === cleanMobile;
+    });
+    if (duplicateMobile) {
+      return {
+        success: false,
+        message: 'এই মোবাইল নম্বর দিয়ে ইতিমধ্যেই একটি অ্যাকাউন্ট তৈরি রয়েছে। অনুগ্রহ করে সরাসরি লগইন করুন।'
+      };
+    }
+
+    const newUser: User = {
+      id: `usr-${Date.now()}`,
+      name: cleanName,
+      email: cleanEmail,
       mobile: mobile.trim(),
+      password: cleanPassword,
       role: 'customer',
-      createdAt: existing?.createdAt || new Date().toISOString(),
-      addresses: existing?.addresses || []
+      createdAt: new Date().toISOString(),
+      addresses: []
     };
 
-    setRegisteredUsers(prev => {
-      const filtered = prev.filter(u => u.email.trim().toLowerCase() !== cleanEmail);
-      return [userToSave, ...filtered];
-    });
-    setCurrentUser(userToSave);
-    return userToSave;
+    setRegisteredUsers(prev => [newUser, ...prev]);
+    setCurrentUser(newUser);
+
+    return {
+      success: true,
+      user: newUser,
+      message: 'আপনার অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে এবং আপনি লগইন হয়েছেন!'
+    };
   };
 
   const addAddress = (addressData: Omit<Address, 'id' | 'userId'>): Address => {
@@ -1088,6 +1173,8 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         deleteDeliveryArea,
         updateDeliverySlot,
         currentUser,
+        registeredUsers,
+        getUserByIdentifier,
         login,
         logout,
         registerUser,
