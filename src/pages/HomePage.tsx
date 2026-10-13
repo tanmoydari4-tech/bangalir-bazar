@@ -185,7 +185,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
                   />
                   <div className="p-4 sm:p-5 bg-gradient-to-t from-black/80 via-black/40 to-transparent absolute bottom-0 inset-x-0 text-white">
                     <span className="bg-[#FFD166] text-[#252B27] text-[10px] uppercase font-black px-2.5 py-1 rounded-md">
-                      FARM TO FORK
+                      {language === 'bn' ? 'ফার্ম থেকে সোজা ঘরে' : 'FARM TO FORK'}
                     </span>
                     <h3 className="text-lg sm:text-xl font-bold mt-1 text-white">
                       {language === 'bn' ? 'খাঁটি সরিষার তেল ও টাটকা শাকসবজি' : 'Pure Mustard Oil, Grains & Fresh Greens'}
@@ -196,25 +196,31 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
                   </div>
                 </div>
 
-                {/* Floating highlight badge 1 */}
-                <div className="absolute -top-4 -left-4 sm:-left-6 bg-white p-3 sm:p-3.5 rounded-2xl shadow-xl border border-gray-100 flex items-center gap-3 animate-in fade-in slide-in-from-top-4">
-                  <div className="p-2 bg-green-100 text-[#176B45] rounded-xl">
-                    <Truck className="w-5 h-5" />
+                {/* Floating highlight badge 1 - Safely anchored, bilingual */}
+                <div className="absolute top-3 left-2 sm:-left-3 bg-white/95 backdrop-blur-xs p-2.5 sm:p-3 rounded-2xl shadow-xl border border-gray-100 flex items-center gap-2.5 animate-in fade-in">
+                  <div className="p-1.5 sm:p-2 bg-green-100 text-[#176B45] rounded-xl shrink-0">
+                    <Truck className="w-4 h-4 sm:w-5 sm:h-5" />
                   </div>
                   <div>
                     <div className="text-xs font-bold text-gray-800">{t('fastDelivery')}</div>
-                    <div className="text-[10px] text-gray-500">Scheduled Slots</div>
+                    <div className="text-[10px] text-gray-500">
+                      {language === 'bn' ? 'সকাল ও সন্ধ্যার স্লট' : 'Scheduled Slots'}
+                    </div>
                   </div>
                 </div>
 
-                {/* Floating highlight badge 2 */}
-                <div className="absolute -bottom-4 -right-4 sm:-right-6 bg-white p-3 sm:p-3.5 rounded-2xl shadow-xl border border-gray-100 flex items-center gap-3 animate-in fade-in slide-in-from-bottom-4">
-                  <div className="p-2 bg-amber-100 text-amber-800 rounded-xl">
-                    <ShieldCheck className="w-5 h-5" />
+                {/* Floating highlight badge 2 - Safely anchored, bilingual */}
+                <div className="absolute bottom-3 right-2 sm:-right-3 bg-white/95 backdrop-blur-xs p-2.5 sm:p-3 rounded-2xl shadow-xl border border-gray-100 flex items-center gap-2.5 animate-in fade-in">
+                  <div className="p-1.5 sm:p-2 bg-amber-100 text-amber-800 rounded-xl shrink-0">
+                    <ShieldCheck className="w-4 h-4 sm:w-5 sm:h-5" />
                   </div>
                   <div>
-                    <div className="text-xs font-bold text-gray-800">100% Quality Check</div>
-                    <div className="text-[10px] text-gray-500">Doorstep Return Policy</div>
+                    <div className="text-xs font-bold text-gray-800">
+                      {language === 'bn' ? '১০০% গুণমান নিশ্চিত' : '100% Quality Check'}
+                    </div>
+                    <div className="text-[10px] text-gray-500">
+                      {language === 'bn' ? 'সহজ রিটার্ন সুবিধা' : 'Doorstep Return Policy'}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -228,7 +234,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
         <div className="flex items-end justify-between mb-6 sm:mb-8">
           <div>
             <span className="text-xs font-extrabold uppercase tracking-wider text-[#176B45]">
-              CATEGORIES
+              {language === 'bn' ? 'ক্যাটাগরি' : 'CATEGORIES'}
             </span>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-[#252B27] mt-1">
               {t('popularCategories')}
@@ -274,7 +280,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
         <div className="bg-gradient-to-r from-[#176B45] via-[#1d7d51] to-[#249660] rounded-3xl p-6 sm:p-10 text-white relative overflow-hidden shadow-xl">
           <div className="relative z-10 max-w-xl space-y-3">
             <span className="bg-[#FFD166] text-[#252B27] text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider inline-block">
-              LIMITED TIME SAVER
+              {language === 'bn' ? 'বিশেষ ছাড়' : 'LIMITED TIME SAVER'}
             </span>
             <h3 className="text-2xl sm:text-4xl font-black leading-tight text-white">
               {language === 'bn' ? 'সুপার সেভার কুপন: প্রথম অর্ডারে ১০% ছাড়!' : 'Super Saver Deal: Flat 10% OFF on Your First Basket!'}
@@ -312,7 +318,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
         <div className="flex items-end justify-between mb-6 sm:mb-8">
           <div>
             <span className="text-xs font-extrabold uppercase tracking-wider text-[#176B45]">
-              FRESH PICKS
+              {language === 'bn' ? 'তাজা ডিল' : 'FRESH PICKS'}
             </span>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-[#252B27] mt-1">
               {t('featuredProducts')}
@@ -339,7 +345,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
         <div className="flex items-end justify-between mb-6 sm:mb-8">
           <div>
             <span className="text-xs font-extrabold uppercase tracking-wider text-amber-600">
-              POPULAR CHOICES
+              {language === 'bn' ? 'জনপ্রিয় পছন্দ' : 'POPULAR CHOICES'}
             </span>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-[#252B27] mt-1">
               {t('bestSellers')}

@@ -121,16 +121,16 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                   <path d="M12 2v4" stroke="#FFD166" />
                 </svg>
               </div>
-              <div className="min-w-0">
-                <div className="flex items-center gap-1 sm:gap-1.5">
-                  <span className="font-extrabold text-[14px] sm:text-xl text-[#176B45] tracking-tight group-hover:text-[#125436] transition-colors truncate">
+              <div className="min-w-0 flex flex-col justify-center">
+                <div className="flex items-center gap-1.5 leading-snug">
+                  <span className="font-black text-sm sm:text-xl text-[#176B45] tracking-tight group-hover:text-[#125436] transition-colors truncate">
                     {storeName}
                   </span>
-                  <span className="bg-[#FFD166]/35 text-[#176B45] text-[9px] sm:text-[10px] font-black px-1.5 py-0.5 rounded-sm uppercase tracking-wide shrink-0">
-                    FRESH
+                  <span className="bg-[#FFD166]/40 text-[#176B45] text-[9px] sm:text-[10px] font-black px-1.5 py-0.5 rounded-md uppercase tracking-wider shrink-0 select-none">
+                    {language === 'bn' ? 'ফ্রেশ' : 'FRESH'}
                   </span>
                 </div>
-                <p className="text-[10px] sm:text-[11px] text-[#6B746D] hidden sm:block font-medium truncate">
+                <p className="text-[10px] sm:text-[11px] text-[#6B746D] hidden sm:block font-medium truncate mt-1 leading-normal">
                   {language === 'bn' ? storeSettings.taglineBn : storeSettings.taglineEn}
                 </p>
               </div>

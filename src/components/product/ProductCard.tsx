@@ -91,14 +91,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onNavigate })
       </div>
 
       {/* Card Content */}
-      <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
-        <div className="space-y-1.5">
+      <div className="p-2.5 sm:p-4 flex-1 flex flex-col justify-between space-y-2 sm:space-y-3">
+        <div className="space-y-1">
           {/* Brand & Pack Size */}
-          <div className="flex items-center justify-between text-[11px] text-[#6B746D]">
-            <span className="font-semibold uppercase tracking-wider text-[#176B45]">
+          <div className="flex items-center justify-between gap-1 text-[10px] sm:text-[11px] text-[#6B746D]">
+            <span className="font-bold uppercase tracking-wider text-[#176B45] truncate">
               {product.brand}
             </span>
-            <span className="bg-[#F0F4EF] px-2 py-0.5 rounded-md font-medium">
+            <span className="bg-[#F0F4EF] text-[#252B27] px-1.5 sm:px-2 py-0.5 rounded-md font-semibold shrink-0 whitespace-nowrap text-[9px] sm:text-[10px]">
               {product.packSize}
             </span>
           </div>
@@ -106,7 +106,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onNavigate })
           {/* Title */}
           <h3
             onClick={() => onNavigate('product', { id: product.id })}
-            className="text-xs sm:text-sm font-bold text-[#252B27] line-clamp-2 hover:text-[#176B45] cursor-pointer transition-colors leading-snug"
+            className="text-xs sm:text-sm font-bold text-[#252B27] line-clamp-2 hover:text-[#176B45] cursor-pointer transition-colors leading-snug min-h-[2rem] sm:min-h-[2.5rem]"
             title={title}
           >
             {title}
@@ -115,79 +115,85 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onNavigate })
           {/* Stock Notice */}
           <div className="pt-0.5">
             {isOutOfStock ? (
-              <span className="text-[10px] font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded-md">
+              <span className="text-[9px] sm:text-[10px] font-bold text-red-600 bg-red-50 px-1.5 py-0.5 rounded-md">
                 {t('outOfStock')}
               </span>
             ) : isLowStock ? (
-              <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-md">
+              <span className="text-[9px] sm:text-[10px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded-md">
                 {t('lowStock', { count: product.stockQuantity })}
               </span>
             ) : (
-              <span className="text-[10px] font-medium text-emerald-700">
+              <span className="text-[9px] sm:text-[10px] font-medium text-emerald-700">
                 ✓ {t('inStock')}
               </span>
             )}
           </div>
         </div>
 
-        {/* Pricing & Add to Cart */}
-        <div className="pt-2 border-t border-[#E5EAE5]/60 flex items-center justify-between gap-2">
-          <div>
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-base sm:text-lg font-extrabold text-[#176B45]">
+        {/* Pricing & Add to Cart Area - Perfectly aligned across all cards */}
+        <div className="pt-2.5 border-t border-[#E5EAE5]/70 flex items-center justify-between gap-1.5 sm:gap-2">
+          {/* Price Block with consistent height */}
+          <div className="min-w-0 flex-1 flex flex-col justify-center">
+            <div className="flex items-baseline gap-1 sm:gap-1.5 leading-none">
+              <span className="text-sm sm:text-base font-black text-[#176B45] tracking-tight">
                 ₹{product.sellingPrice}
               </span>
-              {product.originalPrice > product.sellingPrice && (
-                <span className="text-xs text-gray-400 line-through">
+              {discountPercent > 0 && (
+                <span className="text-[10px] sm:text-xs text-gray-400 line-through">
                   ₹{product.originalPrice}
                 </span>
               )}
             </div>
-            {product.originalPrice > product.sellingPrice && (
-              <div className="text-[10px] font-semibold text-emerald-700">
+            {discountPercent > 0 ? (
+              <div className="text-[9px] sm:text-[10px] font-bold text-emerald-700 truncate mt-0.5 leading-tight">
                 {t('save')} ₹{product.originalPrice - product.sellingPrice}
+              </div>
+            ) : (
+              <div className="text-[9px] sm:text-[10px] font-medium text-transparent select-none mt-0.5 leading-tight">
+                •
               </div>
             )}
           </div>
 
-          {/* Add / Quantity Buttons */}
-          <div>
+          {/* Add / Quantity Buttons - Fixed matching dimensions */}
+          <div className="shrink-0">
             {isOutOfStock ? (
               <button
                 disabled
-                className="px-3 py-2 bg-gray-100 text-gray-400 text-xs font-semibold rounded-xl cursor-not-allowed"
+                className="h-8 sm:h-9 px-2 sm:px-3 bg-gray-100 text-gray-400 text-[10px] sm:text-xs font-bold rounded-xl cursor-not-allowed whitespace-nowrap min-w-[66px] sm:min-w-[76px] flex items-center justify-center"
               >
                 {t('outOfStock')}
               </button>
             ) : inCart ? (
-              <div className="flex items-center border-2 border-[#176B45] rounded-xl bg-green-50/50 overflow-hidden shadow-xs">
+              <div className="flex items-center justify-between border-2 border-[#176B45] rounded-xl bg-green-50/90 overflow-hidden shadow-xs h-8 sm:h-9 min-w-[66px] sm:min-w-[76px]">
                 <button
                   onClick={() => updateCartQuantity(product.id, quantity - 1)}
-                  className="p-1.5 sm:p-2 text-[#176B45] hover:bg-green-100 transition-colors"
+                  className="w-6 sm:w-7 h-full text-[#176B45] hover:bg-green-200/60 active:scale-90 transition-transform flex items-center justify-center shrink-0"
                   aria-label="Decrease quantity"
                 >
-                  <Minus className="w-3.5 h-3.5" />
+                  <Minus className="w-3 h-3 sm:w-3.5 sm:h-3.5 stroke-[2.5]" />
                 </button>
-                <span className="px-2 text-xs sm:text-sm font-extrabold text-[#176B45] min-w-[20px] text-center">
+                <span className="text-xs sm:text-sm font-black text-[#176B45] text-center px-0.5 flex-1 select-none">
                   {quantity}
                 </span>
                 <button
                   onClick={() => updateCartQuantity(product.id, quantity + 1)}
                   disabled={quantity >= product.stockQuantity}
-                  className="p-1.5 sm:p-2 text-[#176B45] hover:bg-green-100 disabled:opacity-30 transition-colors"
+                  className="w-6 sm:w-7 h-full text-[#176B45] hover:bg-green-200/60 active:scale-90 disabled:opacity-30 transition-transform flex items-center justify-center shrink-0"
                   aria-label="Increase quantity"
                 >
-                  <Plus className="w-3.5 h-3.5" />
+                  <Plus className="w-3 h-3 sm:w-3.5 sm:h-3.5 stroke-[2.5]" />
                 </button>
               </div>
             ) : (
               <button
                 onClick={() => addToCart(product, 1)}
-                className="px-2.5 sm:px-3.5 py-1.5 sm:py-2 bg-[#176B45] hover:bg-[#125436] text-white text-[11px] sm:text-xs font-bold rounded-xl transition-all shadow-xs flex items-center gap-1 sm:gap-1.5 active:scale-95 touch-manipulation"
+                className="h-8 sm:h-9 px-2.5 sm:px-3 bg-[#176B45] hover:bg-[#125436] active:scale-95 text-white text-[11px] sm:text-xs font-black rounded-xl transition-all shadow-xs flex items-center justify-center gap-1 min-w-[66px] sm:min-w-[76px] shrink-0 whitespace-nowrap select-none"
+                title={t('addToCart')}
+                aria-label={t('addToCart')}
               >
-                <ShoppingBag className="w-3.5 h-3.5" />
-                <span className="hidden xs:inline sm:inline">{t('addToCart')}</span>
-                <span className="xs:hidden sm:hidden">{language === 'bn' ? 'যোগ' : 'Add'}</span>
+                <Plus className="w-3.5 h-3.5 stroke-[3]" />
+                <span>{language === 'bn' ? 'যোগ' : 'ADD'}</span>
               </button>
             )}
           </div>
