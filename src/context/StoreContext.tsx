@@ -23,7 +23,22 @@ import {
   initialCoupons,
   initialStoreSettings
 } from '../data/initialData';
-import { pushAllDataToSupabase, fetchAllDataFromSupabase } from '../services/supabase';
+import {
+  pushAllDataToSupabase,
+  fetchAllDataFromSupabase,
+  supabase,
+  supabaseUpsertProduct,
+  supabaseDeleteProduct,
+  supabaseUpsertCategory,
+  supabaseDeleteCategory,
+  supabaseUpsertDeliveryArea,
+  supabaseDeleteDeliveryArea,
+  supabaseUpsertDeliverySlot,
+  supabaseUpsertCoupon,
+  supabaseDeleteCoupon,
+  supabaseUpdateStoreSettings,
+  supabaseSaveOrder
+} from '../services/supabase';
 
 interface StoreContextType {
   // Products & Categories
@@ -53,6 +68,9 @@ interface StoreContextType {
   appliedCoupon: Coupon | null;
   applyCoupon: (code: string) => { success: boolean; message: string };
   removeCoupon: () => void;
+  addCoupon: (coupon: Omit<Coupon, 'id'>) => void;
+  updateCoupon: (id: string, updates: Partial<Coupon>) => void;
+  deleteCoupon: (id: string) => void;
   cartSubtotal: number;
   cartDiscount: number;
   deliveryFee: number;
@@ -132,6 +150,7 @@ const STORAGE_KEYS = {
   SETTINGS: 'bb_settings',
   ORDERS: 'bb_orders',
   USER: 'bb_user',
+  REGISTERED_USERS: 'bb_registered_users',
   PIN: 'bb_active_pin',
   MOVEMENTS: 'bb_movements',
   ENQUIRIES: 'bb_enquiries'
@@ -155,7 +174,15 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [products, setProducts] = useState<Product[]>(() => safeParse(STORAGE_KEYS.PRODUCTS, initialProducts));
   const [categories, setCategories] = useState<Category[]>(() => safeParse(STORAGE_KEYS.CATEGORIES, initialCategories));
   const [cart, setCart] = useState<CartItem[]>(() => safeParse(STORAGE_KEYS.CART, []));
-  const [wishlist, setWishlist] = useState<string[]>(() => safeParse(STORAGE_KEYS.WISHLIST, ['prod-fortune-mustard-oil-1l', 'prod-amul-butter-100g']));
+  // Wishlist is always completely blank by default; only items the user explicitly adds will appear
+  const [wishlist, setWishlist] = useState<string[]>(() => {
+    const saved = safeParse<string[]>(STORAGE_KEYS.WISHLIST, []);
+    if (Array.isArray(saved)) {
+      return saved.filter(id => id !== 'prod-fortune-mustard-oil-1l' && id !== 'prod-amul-butter-100g');
+    }
+    return [];
+  });
+  const [registeredUsers, setRegisteredUsers] = useState<User[]>(() => safeParse<User[]>(STORAGE_KEYS.REGISTERED_USERS, []));
   const [deliveryAreas, setDeliveryAreas] = useState<DeliveryArea[]>(() => safeParse(STORAGE_KEYS.DELIVERY_AREAS, initialDeliveryAreas));
   const [deliverySlots, setDeliverySlots] = useState<DeliverySlot[]>(() => safeParse(STORAGE_KEYS.DELIVERY_SLOTS, initialDeliverySlots));
   const [coupons, setCoupons] = useState<Coupon[]>(() => safeParse(STORAGE_KEYS.COUPONS, initialCoupons));
@@ -292,8 +319,92 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   useEffect(() => { localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(storeSettings)); }, [storeSettings]);
   useEffect(() => { localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(orders)); }, [orders]);
   useEffect(() => { localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(currentUser)); }, [currentUser]);
+  useEffect(() => { localStorage.setItem(STORAGE_KEYS.REGISTERED_USERS, JSON.stringify(registeredUsers)); }, [registeredUsers]);
   useEffect(() => { localStorage.setItem(STORAGE_KEYS.MOVEMENTS, JSON.stringify(inventoryMovements)); }, [inventoryMovements]);
   useEffect(() => { localStorage.setItem(STORAGE_KEYS.ENQUIRIES, JSON.stringify(customerEnquiries)); }, [customerEnquiries]);
+
+  // Live multi-device cloud synchronization with Supabase:
+  // When admin updates or changes anything from any device, all users see the update immediately.
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadLatestFromCloud = async () => {
+      try {
+        const res = await fetchAllDataFromSupabase();
+        if (isMounted && res.success && res.data) {
+          const cloudData = res.data;
+          if (cloudData.products && cloudData.products.length > 0) {
+            setProducts(cloudData.products);
+          }
+          if (cloudData.categories && cloudData.categories.length > 0) {
+            setCategories(cloudData.categories);
+          }
+          if (cloudData.deliveryAreas && cloudData.deliveryAreas.length > 0) {
+            setDeliveryAreas(cloudData.deliveryAreas);
+          }
+          if (cloudData.deliverySlots && cloudData.deliverySlots.length > 0) {
+            setDeliverySlots(cloudData.deliverySlots);
+          }
+          if (cloudData.coupons && cloudData.coupons.length > 0) {
+            setCoupons(cloudData.coupons);
+          }
+          if (cloudData.storeSettings) {
+            setStoreSettings(prev => ({ ...prev, ...cloudData.storeSettings }));
+          }
+        }
+      } catch (err) {
+        console.warn('Initial cloud sync notice:', err);
+      }
+    };
+
+    // 1. Initial instant load from Supabase
+    loadLatestFromCloud();
+
+    // 2. Real-time PostgreSQL subscription: triggers whenever any device changes tables
+    const channel = supabase.channel('realtime:all_store_changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, () => {
+        loadLatestFromCloud();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'categories' }, () => {
+        loadLatestFromCloud();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'subcategories' }, () => {
+        loadLatestFromCloud();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'store_settings' }, () => {
+        loadLatestFromCloud();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'coupons' }, () => {
+        loadLatestFromCloud();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'delivery_areas' }, () => {
+        loadLatestFromCloud();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'delivery_slots' }, () => {
+        loadLatestFromCloud();
+      })
+      .subscribe();
+
+    // 3. Tab focus and visibility sync (for phones/laptops waking up or returning from other tabs)
+    const handleVisibilityOrFocus = () => {
+      if (document.visibilityState === 'visible') {
+        loadLatestFromCloud();
+      }
+    };
+    window.addEventListener('focus', handleVisibilityOrFocus);
+    document.addEventListener('visibilitychange', handleVisibilityOrFocus);
+
+    // 4. Fallback interval sync every 20 seconds
+    const interval = setInterval(loadLatestFromCloud, 20000);
+
+    return () => {
+      isMounted = false;
+      channel.unsubscribe();
+      window.removeEventListener('focus', handleVisibilityOrFocus);
+      document.removeEventListener('visibilitychange', handleVisibilityOrFocus);
+      clearInterval(interval);
+    };
+  }, []);
 
   // Set active PIN
   const setActivePinCode = (pin: string) => {
@@ -311,7 +422,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     };
   };
 
-  // Product CRUD
+  // Product CRUD with instant Supabase cloud synchronization
   const addProduct = (prodData: Omit<Product, 'id' | 'createdAt' | 'updatedAt' | 'salesCount'>) => {
     const newProduct: Product = {
       ...prodData,
@@ -321,6 +432,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       updatedAt: new Date().toISOString()
     };
     setProducts(prev => [newProduct, ...prev]);
+    supabaseUpsertProduct(newProduct);
     // Log movement
     if (prodData.stockQuantity > 0) {
       logMovement(newProduct.id, newProduct.nameEn, prodData.stockQuantity, prodData.stockQuantity, 'Restock', 'Initial inventory stock');
@@ -334,7 +446,9 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           const diff = updates.stockQuantity - p.stockQuantity;
           logMovement(p.id, p.nameEn, diff, updates.stockQuantity, 'Correction', 'Manual product edit stock update');
         }
-        return { ...p, ...updates, updatedAt: new Date().toISOString() };
+        const updated = { ...p, ...updates, updatedAt: new Date().toISOString() };
+        supabaseUpsertProduct(updated);
+        return updated;
       }
       return p;
     }));
@@ -343,23 +457,33 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const deleteProduct = (id: string) => {
     setProducts(prev => prev.filter(p => p.id !== id));
     setCart(prev => prev.filter(item => item.productId !== id));
+    supabaseDeleteProduct(id);
   };
 
-  // Category CRUD
+  // Category CRUD with instant Supabase cloud synchronization
   const addCategory = (catData: Omit<Category, 'id'>) => {
     const newCat: Category = {
       ...catData,
       id: `cat-${Date.now()}`
     };
     setCategories(prev => [...prev, newCat]);
+    supabaseUpsertCategory(newCat);
   };
 
   const updateCategory = (id: string, updates: Partial<Category>) => {
-    setCategories(prev => prev.map(c => c.id === id ? { ...c, ...updates } : c));
+    setCategories(prev => prev.map(c => {
+      if (c.id === id) {
+        const updated = { ...c, ...updates };
+        supabaseUpsertCategory(updated);
+        return updated;
+      }
+      return c;
+    }));
   };
 
   const deleteCategory = (id: string) => {
     setCategories(prev => prev.filter(c => c.id !== id));
+    supabaseDeleteCategory(id);
   };
 
   // Cart operations
@@ -503,20 +627,23 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       if (p.id === productId) {
         const newStock = Math.max(0, p.stockQuantity + change);
         logMovement(p.id, p.nameEn, change, newStock, reason, notes);
-        return { ...p, stockQuantity: newStock, updatedAt: new Date().toISOString() };
+        const updated = { ...p, stockQuantity: newStock, updatedAt: new Date().toISOString() };
+        supabaseUpsertProduct(updated);
+        return updated;
       }
       return p;
     }));
   };
 
-  // User management
+  // User management: Preserves exact registered name, mobile, and saved addresses
   const login = (email: string, role: 'customer' | 'admin' = 'customer'): boolean => {
-    const isAdmin = role === 'admin' || email.toLowerCase().includes('admin') || email.toLowerCase() === 'admin@bangalirbazar.com';
+    const cleanEmail = email.trim().toLowerCase();
+    const isAdmin = role === 'admin' || cleanEmail.includes('admin') || cleanEmail === 'admin@bangalirbazar.com';
     if (isAdmin) {
       setCurrentUser({
         id: 'usr-admin-01',
         name: 'Store Administrator',
-        email: email || 'admin@bangalirbazar.com',
+        email: email.trim() || 'admin@bangalirbazar.com',
         mobile: '9830000000',
         role: 'admin',
         createdAt: '2026-01-01T00:00:00Z',
@@ -525,16 +652,43 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       return true;
     }
 
-    // Customer login
-    setCurrentUser(prev => ({
-      id: prev?.id || `usr-${Date.now()}`,
-      name: prev?.name || 'Valued Customer',
-      email: email,
-      mobile: prev?.mobile || '9830123456',
+    // Customer login: look up the user's saved registration profile
+    const registered = registeredUsers.find(u => u.email.trim().toLowerCase() === cleanEmail);
+    if (registered) {
+      setCurrentUser(registered);
+      return true;
+    }
+
+    // Fallback: restore customer profile from any existing orders placed by this email
+    const prevOrder = orders.find(o => o.customerSnapshot?.email?.trim().toLowerCase() === cleanEmail);
+    if (prevOrder && prevOrder.customerSnapshot) {
+      const restoredUser: User = {
+        id: prevOrder.userId || `usr-${Date.now()}`,
+        name: prevOrder.customerSnapshot.name || cleanEmail.split('@')[0],
+        email: email.trim(),
+        mobile: prevOrder.customerSnapshot.mobile || '',
+        role: 'customer',
+        createdAt: prevOrder.createdAt || new Date().toISOString(),
+        addresses: prevOrder.deliveryAddress ? [prevOrder.deliveryAddress] : []
+      };
+      setRegisteredUsers(prev => [restoredUser, ...prev]);
+      setCurrentUser(restoredUser);
+      return true;
+    }
+
+    // If logging in with an email not yet in registeredUsers, create a clean profile without dummy overrides
+    const fallbackName = email.split('@')[0] || 'Customer';
+    const newUser: User = {
+      id: `usr-${Date.now()}`,
+      name: fallbackName,
+      email: email.trim(),
+      mobile: '',
       role: 'customer',
-      createdAt: prev?.createdAt || new Date().toISOString(),
-      addresses: prev?.addresses || []
-    }));
+      createdAt: new Date().toISOString(),
+      addresses: []
+    };
+    setRegisteredUsers(prev => [newUser, ...prev]);
+    setCurrentUser(newUser);
     return true;
   };
 
@@ -544,17 +698,24 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const registerUser = (name: string, email: string, mobile: string): User => {
-    const newUser: User = {
-      id: `usr-${Date.now()}`,
-      name,
-      email,
-      mobile,
+    const cleanEmail = email.trim().toLowerCase();
+    const existing = registeredUsers.find(u => u.email.trim().toLowerCase() === cleanEmail);
+    const userToSave: User = {
+      id: existing?.id || `usr-${Date.now()}`,
+      name: name.trim(),
+      email: email.trim(),
+      mobile: mobile.trim(),
       role: 'customer',
-      createdAt: new Date().toISOString(),
-      addresses: []
+      createdAt: existing?.createdAt || new Date().toISOString(),
+      addresses: existing?.addresses || []
     };
-    setCurrentUser(newUser);
-    return newUser;
+
+    setRegisteredUsers(prev => {
+      const filtered = prev.filter(u => u.email.trim().toLowerCase() !== cleanEmail);
+      return [userToSave, ...filtered];
+    });
+    setCurrentUser(userToSave);
+    return userToSave;
   };
 
   const addAddress = (addressData: Omit<Address, 'id' | 'userId'>): Address => {
@@ -569,7 +730,9 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         ? currentUser.addresses.map(a => ({ ...a, isDefault: false })).concat(newAddress)
         : [...currentUser.addresses, newAddress];
 
-      setCurrentUser({ ...currentUser, addresses: updatedAddresses });
+      const updatedUser = { ...currentUser, addresses: updatedAddresses };
+      setCurrentUser(updatedUser);
+      setRegisteredUsers(prev => prev.map(u => u.email.trim().toLowerCase() === currentUser.email.trim().toLowerCase() ? updatedUser : u));
     }
 
     return newAddress;
@@ -577,21 +740,25 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const deleteAddress = (id: string) => {
     if (!currentUser) return;
-    setCurrentUser({
+    const updatedUser = {
       ...currentUser,
       addresses: currentUser.addresses.filter(a => a.id !== id)
-    });
+    };
+    setCurrentUser(updatedUser);
+    setRegisteredUsers(prev => prev.map(u => u.email.trim().toLowerCase() === currentUser.email.trim().toLowerCase() ? updatedUser : u));
   };
 
   const setDefaultAddress = (id: string) => {
     if (!currentUser) return;
-    setCurrentUser({
+    const updatedUser = {
       ...currentUser,
       addresses: currentUser.addresses.map(a => ({
         ...a,
         isDefault: a.id === id
       }))
-    });
+    };
+    setCurrentUser(updatedUser);
+    setRegisteredUsers(prev => prev.map(u => u.email.trim().toLowerCase() === currentUser.email.trim().toLowerCase() ? updatedUser : u));
   };
 
   // Orders
@@ -664,24 +831,37 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       updatedAt: new Date().toISOString()
     };
 
+    // Save order immediately to Supabase
+    supabaseSaveOrder(newOrder);
+
     // Deduct stock safely & record sales
     setProducts(prev => prev.map(p => {
       const ordered = cart.find(item => item.productId === p.id);
       if (ordered) {
         const remaining = Math.max(0, p.stockQuantity - ordered.quantity);
         logMovement(p.id, p.nameEn, -ordered.quantity, remaining, 'Sale', `Sold in Order #${orderNumber}`);
-        return {
+        const updated = {
           ...p,
           stockQuantity: remaining,
-          salesCount: (p.salesCount || 0) + ordered.quantity
+          salesCount: (p.salesCount || 0) + ordered.quantity,
+          updatedAt: new Date().toISOString()
         };
+        supabaseUpsertProduct(updated);
+        return updated;
       }
       return p;
     }));
 
     // Update coupon usage count if used
     if (appliedCoupon) {
-      setCoupons(prev => prev.map(c => c.id === appliedCoupon.id ? { ...c, usedCount: c.usedCount + 1 } : c));
+      setCoupons(prev => prev.map(c => {
+        if (c.id === appliedCoupon.id) {
+          const updated = { ...c, usedCount: c.usedCount + 1 };
+          supabaseUpsertCoupon(updated);
+          return updated;
+        }
+        return c;
+      }));
     }
 
     setOrders(prev => [newOrder, ...prev]);
@@ -693,12 +873,14 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const updateOrderStatus = (orderId: string, status: OrderStatus, deliveryPerson?: { name: string; phone: string }) => {
     setOrders(prev => prev.map(o => {
       if (o.id === orderId) {
-        return {
+        const updated = {
           ...o,
           orderStatus: status,
           deliveryPerson: deliveryPerson || o.deliveryPerson,
           updatedAt: new Date().toISOString()
         };
+        supabaseSaveOrder(updated);
+        return updated;
       }
       return o;
     }));
@@ -708,26 +890,70 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return orders.find(o => o.id === orderId || o.orderNumber === orderId);
   };
 
-  // Delivery Areas & Slots admin controls
+  // Delivery Areas & Slots admin controls with instant cloud sync
   const addDeliveryArea = (area: Omit<DeliveryArea, 'id'>) => {
-    setDeliveryAreas(prev => [...prev, { ...area, id: `area-${Date.now()}` }]);
+    const newArea: DeliveryArea = { ...area, id: `area-${Date.now()}` };
+    setDeliveryAreas(prev => [...prev, newArea]);
+    supabaseUpsertDeliveryArea(newArea);
   };
 
   const updateDeliveryArea = (id: string, updates: Partial<DeliveryArea>) => {
-    setDeliveryAreas(prev => prev.map(a => a.id === id ? { ...a, ...updates } : a));
+    setDeliveryAreas(prev => prev.map(a => {
+      if (a.id === id) {
+        const updated = { ...a, ...updates };
+        supabaseUpsertDeliveryArea(updated);
+        return updated;
+      }
+      return a;
+    }));
   };
 
   const deleteDeliveryArea = (id: string) => {
     setDeliveryAreas(prev => prev.filter(a => a.id !== id));
+    supabaseDeleteDeliveryArea(id);
   };
 
   const updateDeliverySlot = (id: string, updates: Partial<DeliverySlot>) => {
-    setDeliverySlots(prev => prev.map(s => s.id === id ? { ...s, ...updates } : s));
+    setDeliverySlots(prev => prev.map(s => {
+      if (s.id === id) {
+        const updated = { ...s, ...updates };
+        supabaseUpsertDeliverySlot(updated);
+        return updated;
+      }
+      return s;
+    }));
   };
 
-  // Store Settings
+  // Coupons CRUD with instant cloud sync
+  const addCoupon = (cpnData: Omit<Coupon, 'id'>) => {
+    const newCpn: Coupon = { ...cpnData, id: `cpn-${Date.now()}` };
+    setCoupons(prev => [newCpn, ...prev]);
+    supabaseUpsertCoupon(newCpn);
+  };
+
+  const updateCoupon = (id: string, updates: Partial<Coupon>) => {
+    setCoupons(prev => prev.map(c => {
+      if (c.id === id) {
+        const updated = { ...c, ...updates };
+        supabaseUpsertCoupon(updated);
+        return updated;
+      }
+      return c;
+    }));
+  };
+
+  const deleteCoupon = (id: string) => {
+    setCoupons(prev => prev.filter(c => c.id !== id));
+    supabaseDeleteCoupon(id);
+  };
+
+  // Store Settings with instant cloud sync
   const updateStoreSettings = (updates: Partial<StoreSettings>) => {
-    setStoreSettings(prev => ({ ...prev, ...updates }));
+    setStoreSettings(prev => {
+      const updated = { ...prev, ...updates };
+      supabaseUpdateStoreSettings(updated);
+      return updated;
+    });
   };
 
   // Enquiries
@@ -755,7 +981,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setCoupons(initialCoupons);
     setStoreSettings(initialStoreSettings);
     setCart([]);
-    setWishlist(['prod-fortune-mustard-oil-1l', 'prod-amul-butter-100g']);
+    setWishlist([]);
     setCurrentUser(defaultDemoUser);
     setActivePinCodeState('700091');
     window.location.reload();
@@ -828,6 +1054,9 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         appliedCoupon,
         applyCoupon,
         removeCoupon,
+        addCoupon,
+        updateCoupon,
+        deleteCoupon,
         cartSubtotal,
         cartDiscount,
         deliveryFee,

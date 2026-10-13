@@ -94,14 +94,14 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
   return (
     <header className="sticky top-0 z-40 bg-white border-b border-[#E5EAE5] shadow-xs">
       {/* Main Header Bar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3">
-        <div className="flex items-center justify-between gap-2 sm:gap-6">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 sm:py-3">
+        <div className="flex items-center justify-between gap-1.5 sm:gap-6">
           
           {/* Mobile Menu Button + Brand Logo */}
           <div className="flex items-center gap-1.5 sm:gap-3 min-w-0">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-1.5 sm:p-2 text-gray-700 hover:bg-gray-100 rounded-xl shrink-0"
+              className="lg:hidden p-1.5 text-gray-700 hover:bg-gray-100 rounded-xl shrink-0"
               aria-label="Open navigation menu"
             >
               {isMobileMenuOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6" /> : <Menu className="w-5 h-5 sm:w-6 sm:h-6" />}
@@ -110,10 +110,10 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
             {/* Brand Logo & Tagline */}
             <div
               onClick={() => onNavigate('home')}
-              className="flex items-center gap-2 sm:gap-2.5 cursor-pointer shrink-0 select-none group min-w-0"
+              className="flex items-center gap-1.5 sm:gap-2.5 cursor-pointer select-none group min-w-0"
             >
               {/* Custom Brand SVG Logo with Fresh Leaf & Grocery Basket */}
-              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-gradient-to-br from-[#176B45] to-[#4FA86B] p-1.5 sm:p-2 flex items-center justify-center shadow-md shadow-green-900/10 group-hover:scale-105 transition-transform shrink-0">
+              <div className="w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-gradient-to-br from-[#176B45] to-[#4FA86B] p-1.5 sm:p-2 flex items-center justify-center shadow-md shadow-green-900/10 group-hover:scale-105 transition-transform shrink-0">
                 <svg viewBox="0 0 24 24" fill="none" className="w-full h-full text-white" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
                   <line x1="3" y1="6" x2="21" y2="6" />
@@ -123,10 +123,10 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
               </div>
               <div className="min-w-0">
                 <div className="flex items-center gap-1 sm:gap-1.5">
-                  <span className="font-extrabold text-base sm:text-xl text-[#176B45] tracking-tight group-hover:text-[#125436] transition-colors truncate max-w-[125px] sm:max-w-none">
+                  <span className="font-extrabold text-[14px] sm:text-xl text-[#176B45] tracking-tight group-hover:text-[#125436] transition-colors truncate">
                     {storeName}
                   </span>
-                  <span className="bg-[#FFD166]/30 text-[#176B45] text-[9px] sm:text-[10px] font-black px-1.5 py-0.5 rounded-sm uppercase tracking-wide shrink-0">
+                  <span className="bg-[#FFD166]/35 text-[#176B45] text-[9px] sm:text-[10px] font-black px-1.5 py-0.5 rounded-sm uppercase tracking-wide shrink-0">
                     FRESH
                   </span>
                 </div>

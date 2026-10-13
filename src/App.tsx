@@ -46,6 +46,17 @@ export function AppContent() {
   const [pageParams, setPageParams] = useState<Record<string, string>>({});
   const [adminTab, setAdminTab] = useState<AdminTab>('data-sync');
 
+  // Track logout transition: wherever the user was while signed in, upon signout they return to the main dashboard
+  const previousUserRef = React.useRef(currentUser);
+  useEffect(() => {
+    if (previousUserRef.current && !currentUser) {
+      setCurrentPage('home');
+      setPageParams({});
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    previousUserRef.current = currentUser;
+  }, [currentUser]);
+
   const navigate = (page: string, params: Record<string, string> = {}) => {
     setCurrentPage(page);
     setPageParams(params);
@@ -146,15 +157,42 @@ export function AppContent() {
         )}
 
         {currentPage === 'orders' && (
-          <CustomerDashboardPage initialTab="orders" onNavigate={navigate} />
+          currentUser ? (
+            <CustomerDashboardPage initialTab="orders" onNavigate={navigate} />
+          ) : (
+            <CustomerLoginPage
+              redirectTo="orders"
+              initialMode="login"
+              message="Please log in or create an account to view your orders."
+              onNavigate={navigate}
+            />
+          )
         )}
 
         {currentPage === 'account' && (
-          <CustomerDashboardPage initialTab="profile" onNavigate={navigate} />
+          currentUser ? (
+            <CustomerDashboardPage initialTab="profile" onNavigate={navigate} />
+          ) : (
+            <CustomerLoginPage
+              redirectTo="account"
+              initialMode="login"
+              message="Please log in or create an account to view your account details."
+              onNavigate={navigate}
+            />
+          )
         )}
 
         {currentPage === 'addresses' && (
-          <CustomerDashboardPage initialTab="addresses" onNavigate={navigate} />
+          currentUser ? (
+            <CustomerDashboardPage initialTab="addresses" onNavigate={navigate} />
+          ) : (
+            <CustomerLoginPage
+              redirectTo="addresses"
+              initialMode="login"
+              message="Please log in or create an account to view your saved addresses."
+              onNavigate={navigate}
+            />
+          )
         )}
 
         {currentPage === 'login' && (

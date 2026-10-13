@@ -349,3 +349,273 @@ export async function fetchAllDataFromSupabase(): Promise<{
     };
   }
 }
+
+// Granular real-time sync mutations for multi-device live consistency
+export async function supabaseUpsertProduct(product: Product): Promise<{ success: boolean; error?: string }> {
+  try {
+    const row = {
+      id: product.id,
+      sku: product.sku,
+      name_en: product.nameEn,
+      name_bn: product.nameBn,
+      slug: product.slug,
+      brand: product.brand,
+      category_id: product.categoryId,
+      subcategory_id: product.subcategoryId || null,
+      description_en: product.descriptionEn || '',
+      description_bn: product.descriptionBn || '',
+      pack_size: product.packSize,
+      unit: product.unit || 'kg',
+      selling_price: product.sellingPrice,
+      original_price: product.originalPrice,
+      stock_quantity: product.stockQuantity,
+      low_stock_threshold: product.lowStockThreshold || 10,
+      is_vegetarian: product.isVegetarian ?? true,
+      ingredients_en: product.ingredientsEn || null,
+      ingredients_bn: product.ingredientsBn || null,
+      manufacturer: product.manufacturer || null,
+      expiry_notice_en: product.expiryNoticeEn || null,
+      expiry_notice_bn: product.expiryNoticeBn || null,
+      storage_instructions_en: product.storageInstructionsEn || null,
+      storage_instructions_bn: product.storageInstructionsBn || null,
+      images: product.images,
+      is_published: product.isPublished ?? true,
+      is_featured: product.isFeatured ?? false,
+      is_best_seller: product.isBestSeller ?? false,
+      sales_count: product.salesCount || 0,
+      updated_at: new Date().toISOString()
+    };
+    const { error } = await supabase.from('products').upsert(row, { onConflict: 'id' });
+    if (error) throw error;
+    return { success: true };
+  } catch (err: any) {
+    console.error('Supabase upsert product error:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+export async function supabaseDeleteProduct(id: string): Promise<{ success: boolean; error?: string }> {
+  try {
+    const { error } = await supabase.from('products').delete().eq('id', id);
+    if (error) throw error;
+    return { success: true };
+  } catch (err: any) {
+    console.error('Supabase delete product error:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+export async function supabaseUpsertCategory(category: Category, displayOrder = 1): Promise<{ success: boolean; error?: string }> {
+  try {
+    const catRow = {
+      id: category.id,
+      name_en: category.nameEn,
+      name_bn: category.nameBn,
+      slug: category.slug,
+      description_en: category.descriptionEn || null,
+      description_bn: category.descriptionBn || null,
+      icon: category.icon || 'Layers',
+      image: category.image,
+      display_order: displayOrder,
+      is_active: category.isActive ?? true,
+      updated_at: new Date().toISOString()
+    };
+    const { error } = await supabase.from('categories').upsert(catRow, { onConflict: 'id' });
+    if (error) throw error;
+
+    // Subcategories if any
+    if (category.subcategories && category.subcategories.length > 0) {
+      const subcatRows = category.subcategories.map(s => ({
+        id: s.id,
+        category_id: category.id,
+        name_en: s.nameEn,
+        name_bn: s.nameBn,
+        slug: s.slug
+      }));
+      await supabase.from('subcategories').upsert(subcatRows, { onConflict: 'id' });
+    }
+    return { success: true };
+  } catch (err: any) {
+    console.error('Supabase upsert category error:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+export async function supabaseDeleteCategory(id: string): Promise<{ success: boolean; error?: string }> {
+  try {
+    const { error } = await supabase.from('categories').delete().eq('id', id);
+    if (error) throw error;
+    return { success: true };
+  } catch (err: any) {
+    console.error('Supabase delete category error:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+export async function supabaseUpsertDeliveryArea(area: DeliveryArea): Promise<{ success: boolean; error?: string }> {
+  try {
+    const row = {
+      id: area.id,
+      pin_code: area.pinCode,
+      area_name_en: area.areaNameEn,
+      area_name_bn: area.areaNameBn,
+      district: area.district,
+      delivery_fee: area.deliveryFee,
+      min_order_amount: area.minOrderAmount,
+      free_delivery_threshold: area.freeDeliveryThreshold,
+      estimated_window_en: area.estimatedWindowEn,
+      estimated_window_bn: area.estimatedWindowBn,
+      is_cod_available: area.isCodAvailable ?? true,
+      is_active: area.isActive ?? true
+    };
+    const { error } = await supabase.from('delivery_areas').upsert(row, { onConflict: 'id' });
+    if (error) throw error;
+    return { success: true };
+  } catch (err: any) {
+    console.error('Supabase upsert delivery area error:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+export async function supabaseDeleteDeliveryArea(id: string): Promise<{ success: boolean; error?: string }> {
+  try {
+    const { error } = await supabase.from('delivery_areas').delete().eq('id', id);
+    if (error) throw error;
+    return { success: true };
+  } catch (err: any) {
+    console.error('Supabase delete delivery area error:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+export async function supabaseUpsertDeliverySlot(slot: DeliverySlot): Promise<{ success: boolean; error?: string }> {
+  try {
+    const row = {
+      id: slot.id,
+      time_range_en: slot.timeRangeEn,
+      time_range_bn: slot.timeRangeBn,
+      cutoff_hour: slot.cutoffHour,
+      capacity: slot.capacity,
+      booked_count: slot.bookedCount || 0,
+      is_active: slot.isActive ?? true
+    };
+    const { error } = await supabase.from('delivery_slots').upsert(row, { onConflict: 'id' });
+    if (error) throw error;
+    return { success: true };
+  } catch (err: any) {
+    console.error('Supabase upsert delivery slot error:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+export async function supabaseUpsertCoupon(coupon: Coupon): Promise<{ success: boolean; error?: string }> {
+  try {
+    const row = {
+      id: coupon.id,
+      code: coupon.code,
+      discount_type: coupon.discountType,
+      discount_value: coupon.discountValue,
+      min_order_value: coupon.minOrderValue,
+      max_discount: coupon.maxDiscount || null,
+      expiry_date: coupon.expiryDate,
+      usage_limit: coupon.usageLimit || 1000,
+      used_count: coupon.usedCount || 0,
+      first_order_only: coupon.firstOrderOnly ?? false,
+      is_active: coupon.isActive ?? true,
+      description_en: coupon.descriptionEn || '',
+      description_bn: coupon.descriptionBn || ''
+    };
+    const { error } = await supabase.from('coupons').upsert(row, { onConflict: 'id' });
+    if (error) throw error;
+    return { success: true };
+  } catch (err: any) {
+    console.error('Supabase upsert coupon error:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+export async function supabaseDeleteCoupon(id: string): Promise<{ success: boolean; error?: string }> {
+  try {
+    const { error } = await supabase.from('coupons').delete().eq('id', id);
+    if (error) throw error;
+    return { success: true };
+  } catch (err: any) {
+    console.error('Supabase delete coupon error:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+export async function supabaseUpdateStoreSettings(settings: StoreSettings): Promise<{ success: boolean; error?: string }> {
+  try {
+    const row = {
+      id: 'primary',
+      store_name_en: settings.storeNameEn,
+      store_name_bn: settings.storeNameBn,
+      tagline_en: settings.taglineEn,
+      tagline_bn: settings.taglineBn,
+      contact_email: settings.contactEmail,
+      contact_phone: settings.contactPhone,
+      whatsapp_number: settings.whatsappNumber,
+      address_en: settings.addressEn,
+      address_bn: settings.addressBn,
+      opening_hours_en: settings.openingHoursEn,
+      opening_hours_bn: settings.openingHoursBn,
+      default_delivery_fee: settings.defaultDeliveryFee,
+      default_free_delivery_threshold: settings.defaultFreeDeliveryThreshold,
+      hero_headline_en: settings.heroHeadlineEn,
+      hero_headline_bn: settings.heroHeadlineBn,
+      hero_subheadline_en: settings.heroSubheadlineEn,
+      hero_subheadline_bn: settings.heroSubheadlineBn,
+      announcement_text_en: settings.announcementTextEn,
+      announcement_text_bn: settings.announcementTextBn,
+      announcement_active: settings.announcementActive ?? true,
+      updated_at: new Date().toISOString()
+    };
+    const { error } = await supabase.from('store_settings').upsert(row, { onConflict: 'id' });
+    if (error) throw error;
+    return { success: true };
+  } catch (err: any) {
+    console.error('Supabase update store settings error:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+export async function supabaseSaveOrder(order: any): Promise<{ success: boolean; error?: string }> {
+  try {
+    const row = {
+      id: order.id,
+      order_number: order.orderNumber,
+      user_id: order.userId || 'guest',
+      customer_name: order.customerSnapshot?.name || order.deliveryAddress?.name || 'Customer',
+      customer_email: order.customerSnapshot?.email || 'customer@bangalirbazar.com',
+      customer_mobile: order.customerSnapshot?.mobile || order.deliveryAddress?.mobile || '',
+      address_line: order.deliveryAddress?.addressLine || '',
+      locality: order.deliveryAddress?.locality || '',
+      landmark: order.deliveryAddress?.landmark || null,
+      pin_code: order.deliveryAddress?.pinCode || '',
+      subtotal: order.subtotal,
+      discount: order.discount || 0,
+      coupon_code: order.couponCode || null,
+      delivery_fee: order.deliveryFee || 0,
+      tax: order.tax || 0,
+      total: order.total,
+      payment_method: order.paymentMethod,
+      payment_status: order.paymentStatus || 'Pending',
+      order_status: order.orderStatus || 'Order Placed',
+      delivery_date: order.deliveryDate,
+      delivery_slot: order.deliverySlot,
+      delivery_person_name: order.deliveryPerson?.name || null,
+      delivery_person_phone: order.deliveryPerson?.phone || null,
+      notes: order.notes || null,
+      created_at: order.createdAt || new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    };
+    const { error } = await supabase.from('orders').upsert(row, { onConflict: 'id' });
+    if (error) throw error;
+    return { success: true };
+  } catch (err: any) {
+    console.error('Supabase save order error:', err);
+    return { success: false, error: err.message };
+  }
+}
+

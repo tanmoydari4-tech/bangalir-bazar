@@ -5,10 +5,9 @@ import { Coupon } from '../../types';
 import { Tag, Plus, Trash2, Check, X, Percent, Calendar } from 'lucide-react';
 
 export const AdminCoupons: React.FC = () => {
-  const { coupons } = useStore();
+  const { coupons, addCoupon, updateCoupon, deleteCoupon } = useStore();
   const { language } = useLanguage();
 
-  const [couponList, setCouponList] = useState<Coupon[]>(coupons);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [form, setForm] = useState({
@@ -28,8 +27,7 @@ export const AdminCoupons: React.FC = () => {
     e.preventDefault();
     if (!form.code.trim()) return;
 
-    const newCoupon: Coupon = {
-      id: `c-${Date.now()}`,
+    addCoupon({
       code: form.code.trim().toUpperCase(),
       discountType: form.discountType,
       discountValue: form.discountValue,
@@ -42,19 +40,33 @@ export const AdminCoupons: React.FC = () => {
       isActive: form.isActive,
       descriptionEn: form.descriptionEn || `${form.discountValue}% OFF on orders above ₹${form.minOrderValue}`,
       descriptionBn: form.descriptionBn || `₹${form.minOrderValue} এর বেশি অর্ডারে ছাড়`
-    };
+    });
 
-    setCouponList([newCoupon, ...couponList]);
     setIsModalOpen(false);
+    setForm({
+      code: '',
+      discountType: 'percentage',
+      discountValue: 10,
+      minOrderValue: 299,
+      maxDiscount: 100,
+      expiryDate: '2026-12-31',
+      firstOrderOnly: false,
+      isActive: true,
+      descriptionEn: '',
+      descriptionBn: ''
+    });
   };
 
   const toggleCouponStatus = (id: string) => {
-    setCouponList(couponList.map(c => c.id === id ? { ...c, isActive: !c.isActive } : c));
+    const target = coupons.find(c => c.id === id);
+    if (target) {
+      updateCoupon(id, { isActive: !target.isActive });
+    }
   };
 
-  const deleteCoupon = (id: string) => {
+  const handleDeleteCoupon = (id: string) => {
     if (window.confirm('Delete this coupon promotion?')) {
-      setCouponList(couponList.filter(c => c.id !== id));
+      deleteCoupon(id);
     }
   };
 
@@ -78,7 +90,7 @@ export const AdminCoupons: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {couponList.map((c) => (
+        {coupons.map((c) => (
           <div
             key={c.id}
             className="bg-white rounded-3xl border border-[#E5EAE5] p-5 shadow-xs space-y-4 flex flex-col justify-between"
@@ -116,7 +128,7 @@ export const AdminCoupons: React.FC = () => {
               </button>
 
               <button
-                onClick={() => deleteCoupon(c.id)}
+                onClick={() => handleDeleteCoupon(c.id)}
                 className="p-1.5 text-gray-400 hover:text-rose-600 rounded-lg"
                 title="Delete coupon"
               >

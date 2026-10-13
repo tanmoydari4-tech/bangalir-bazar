@@ -10,7 +10,7 @@ interface WishlistPageProps {
 
 export const WishlistPage: React.FC<WishlistPageProps> = ({ onNavigate }) => {
   const { wishlist, products } = useStore();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const wishlistedProducts = products.filter(p => wishlist.includes(p.id));
 
@@ -39,15 +39,19 @@ export const WishlistPage: React.FC<WishlistPageProps> = ({ onNavigate }) => {
           <div className="w-16 h-16 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center mx-auto">
             <Heart className="w-8 h-8" />
           </div>
-          <h3 className="text-lg font-bold text-gray-800">Your wishlist is empty</h3>
+          <h3 className="text-lg font-bold text-gray-800">
+            {language === 'bn' ? 'আপনার পছন্দের তালিকা বর্তমানে সম্পূর্ণ খালি' : 'Your wishlist is currently empty'}
+          </h3>
           <p className="text-xs text-gray-500">
-            Click the heart icon on any grocery item to save it for quick repeat ordering.
+            {language === 'bn'
+              ? 'যেকোনো পণ্যের ওপর হার্ট (পছন্দ) আইকনে ক্লিক করে আপনি পছন্দের তালিকায় সংরক্ষণ করতে পারবেন।'
+              : 'Click the heart icon on any grocery item to save it for quick repeat ordering.'}
           </p>
           <button
             onClick={() => onNavigate('shop')}
-            className="px-6 py-3 bg-[#176B45] text-white text-xs font-bold rounded-xl hover:bg-[#125436]"
+            className="px-6 py-3 bg-[#176B45] text-white text-xs font-bold rounded-xl hover:bg-[#125436] transition-all shadow-xs"
           >
-            Explore Groceries
+            {language === 'bn' ? 'মুদি সামগ্রী দেখুন' : 'Explore Groceries'}
           </button>
         </div>
       ) : (
