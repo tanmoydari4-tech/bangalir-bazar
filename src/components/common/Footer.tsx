@@ -227,15 +227,16 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         </div>
       </div>
 
-      {/* Floating WhatsApp Support Button */}
+      {/* Floating WhatsApp Support Button (positioned above mobile bottom navigation bar) */}
       <a
         href={`https://wa.me/${storeSettings.whatsappNumber.replace(/[^0-9]/g, '')}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 z-30 p-3.5 bg-[#25D366] hover:bg-[#20ba5a] text-white rounded-full shadow-2xl transition-transform hover:scale-110 flex items-center justify-center group"
+        className="fixed bottom-20 md:bottom-6 right-3.5 sm:right-6 z-30 p-3 sm:p-3.5 bg-[#25D366] hover:bg-[#20ba5a] text-white rounded-full shadow-2xl transition-transform hover:scale-110 flex items-center justify-center group active:scale-95"
         title="Chat on WhatsApp"
+        aria-label="Chat on WhatsApp"
       >
-        <MessageCircle className="w-6 h-6" />
+        <MessageCircle className="w-5 h-5 sm:w-6 sm:h-6" />
         <span className="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs transition-all duration-300 ease-in-out text-xs font-bold pl-0 group-hover:pl-2">
           {t('whatsappSupport')}
         </span>

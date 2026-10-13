@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useStore } from '../../context/StoreContext';
 import { useLanguage } from '../../context/LanguageContext';
-import { X, Plus, Minus, Trash2, ShoppingBag, ArrowRight, ShieldCheck, Tag } from 'lucide-react';
+import { X, Plus, Minus, Trash2, ShoppingBag, ArrowRight, ShieldCheck, Tag, CheckCircle2, AlertCircle } from 'lucide-react';
 
 interface MiniCartDrawerProps {
   onNavigate: (page: string, params?: Record<string, string>) => void;
@@ -22,9 +22,13 @@ export const MiniCartDrawer: React.FC<MiniCartDrawerProps> = ({ onNavigate }) =>
     selectedDeliveryArea,
     storeSettings,
     appliedCoupon,
+    applyCoupon,
+    removeCoupon,
     currentUser
   } = useStore();
   const { t, language } = useLanguage();
+  const [couponCodeInput, setCouponCodeInput] = useState('');
+  const [couponMsg, setCouponMsg] = useState<{ success: boolean; text: string } | null>(null);
 
   if (!isMiniCartOpen) return null;
 
@@ -183,36 +187,98 @@ export const MiniCartDrawer: React.FC<MiniCartDrawerProps> = ({ onNavigate }) =>
           {/* Footer & Price Breakdown */}
           {cart.length > 0 && (
             <div className="p-4 sm:p-5 border-t border-gray-100 bg-[#F7F9F5] space-y-3">
-              {appliedCoupon && (
-                <div className="flex items-center justify-between bg-emerald-50 text-emerald-800 p-2 rounded-lg text-xs font-medium border border-emerald-200">
+              
+              {/* Coupon Box in Mini Cart */}
+              <div className="bg-white p-3 rounded-2xl border border-gray-200/80 shadow-2xs space-y-2">
+                <div className="flex items-center justify-between text-xs font-bold text-gray-800">
                   <div className="flex items-center gap-1.5">
-                    <Tag className="w-3.5 h-3.5" />
-                    <span>Coupon: <strong>{appliedCoupon.code}</strong></span>
+                    <Tag className="w-3.5 h-3.5 text-[#176B45]" />
+                    <span>{language === 'bn' ? 'কুপন কোড' : 'Coupon Code'}</span>
                   </div>
-                  <span className="font-bold">-₹{cartDiscount}</span>
+                  <span className="text-[10px] text-gray-500 font-normal">
+                    {language === 'bn' ? 'লিখলে ছাড় পাবেন' : 'Type code to get discount'}
+                  </span>
                 </div>
-              )}
+
+                {appliedCoupon ? (
+                  <div className="flex items-center justify-between bg-emerald-50 text-emerald-800 p-2.5 rounded-xl text-xs font-medium border border-emerald-200">
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                      <span className="truncate font-mono font-bold text-[#176B45]">{appliedCoupon.code}</span>
+                      <span className="text-[11px] text-emerald-700">(-₹{cartDiscount})</span>
+                    </div>
+                    <button
+                      onClick={() => {
+                        removeCoupon();
+                        setCouponMsg(null);
+                      }}
+                      className="text-xs font-bold text-rose-600 hover:text-rose-700 hover:underline shrink-0 ml-2"
+                    >
+                      {language === 'bn' ? 'মুছুন' : 'Remove'}
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-1.5">
+                    <div className="flex gap-1.5">
+                      <input
+                        type="text"
+                        value={couponCodeInput}
+                        onChange={(e) => {
+                          setCouponCodeInput(e.target.value.toUpperCase());
+                          setCouponMsg(null);
+                        }}
+                        placeholder="e.g. WELCOME10"
+                        className="flex-1 px-2.5 py-1.5 border border-gray-300 rounded-lg text-xs font-mono font-bold uppercase focus:outline-none focus:ring-1 focus:ring-[#176B45]"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (!couponCodeInput.trim()) return;
+                          const res = applyCoupon(couponCodeInput);
+                          setCouponMsg({ success: res.success, text: res.message });
+                          if (res.success) setCouponCodeInput('');
+                        }}
+                        className="px-3 py-1.5 bg-[#176B45] hover:bg-[#125436] text-white text-xs font-bold rounded-lg transition-colors cursor-pointer"
+                      >
+                        {language === 'bn' ? 'Apply' : 'Apply'}
+                      </button>
+                    </div>
+
+                    {couponMsg && (
+                      <div
+                        className={`p-2 rounded-lg text-[11px] flex items-center gap-1.5 ${
+                          couponMsg.success ? 'bg-emerald-50 text-emerald-800' : 'bg-rose-50 text-rose-800'
+                        }`}
+                      >
+                        {couponMsg.success ? <CheckCircle2 className="w-3.5 h-3.5 shrink-0" /> : <AlertCircle className="w-3.5 h-3.5 shrink-0" />}
+                        <span>{couponMsg.text}</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
 
               <div className="space-y-1.5 text-xs text-gray-600">
                 <div className="flex justify-between">
                   <span>{t('subtotal')}</span>
                   <span className="font-semibold text-gray-800">₹{cartSubtotal}</span>
                 </div>
-                {savingsTotal > 0 && (
-                  <div className="flex justify-between text-green-700">
-                    <span>{t('itemDiscount')}</span>
-                    <span className="font-semibold">-₹{savingsTotal}</span>
+
+                {cartDiscount > 0 ? (
+                  <div className="flex justify-between text-emerald-700 font-medium">
+                    <span>{language === 'bn' ? `কুপন ছাড় (${appliedCoupon?.code})` : `Coupon (${appliedCoupon?.code})`}</span>
+                    <span className="font-bold">-₹{cartDiscount}</span>
+                  </div>
+                ) : (
+                  <div className="flex justify-between text-gray-400">
+                    <span>{language === 'bn' ? 'কুপন ছাড়' : 'Coupon Discount'}</span>
+                    <span>{language === 'bn' ? '₹০ (কুপন লিখলে ছাড় পাবেন)' : '₹0 (No coupon)'}</span>
                   </div>
                 )}
-                {cartDiscount > 0 && (
-                  <div className="flex justify-between text-green-700">
-                    <span>Coupon Discount</span>
-                    <span className="font-semibold">-₹{cartDiscount}</span>
-                  </div>
-                )}
+
                 <div className="flex justify-between">
                   <span>{t('deliveryFee')}</span>
-                  <span className={`font-semibold ${deliveryFee === 0 ? 'text-green-700' : 'text-gray-800'}`}>
+                  <span className={`font-semibold ${deliveryFee === 0 ? 'text-emerald-700' : 'text-gray-800'}`}>
                     {deliveryFee === 0 ? t('free') : `₹${deliveryFee}`}
                   </span>
                 </div>

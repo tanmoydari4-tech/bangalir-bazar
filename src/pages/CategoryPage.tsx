@@ -23,7 +23,7 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({ categorySlug, onNavi
   });
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8">
+    <div className="max-w-7xl mx-auto px-3 sm:px-6 py-5 sm:py-8 space-y-6 sm:space-y-8">
       
       {/* Category Hero / Header */}
       <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-[#176B45] to-[#258257] text-white p-6 sm:p-10 shadow-lg flex flex-col md:flex-row items-center justify-between gap-6">
@@ -99,7 +99,7 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({ categorySlug, onNavi
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 sm:gap-5">
           {categoryProducts.map((p) => (
             <ProductCard key={p.id} product={p} onNavigate={onNavigate} />
           ))}

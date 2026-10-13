@@ -844,43 +844,58 @@ export const initialCoupons: Coupon[] = [
     code: 'WELCOME10',
     discountType: 'percentage',
     discountValue: 10,
-    minOrderValue: 299,
+    minOrderValue: 99,
     maxDiscount: 100,
     expiryDate: '2026-12-31',
     usageLimit: 1000,
     usedCount: 142,
-    firstOrderOnly: true,
+    firstOrderOnly: false,
     isActive: true,
-    descriptionEn: 'Get 10% OFF up to ₹100 on your first grocery basket (Min order ₹299)',
-    descriptionBn: 'প্রথম অর্ডারে ১০% ছাড় (সর্বোচ্চ ₹১০০, ন্যূনতম ₹২৯৯)'
+    descriptionEn: 'Get 10% OFF up to ₹100 on your grocery basket (Min order ₹99)',
+    descriptionBn: '১০% ছাড় (সর্বোচ্চ ₹১০০, ন্যূনতম অর্ডার ₹৯৯)'
   },
   {
     id: 'c-fresh50',
     code: 'FRESH50',
     discountType: 'fixed',
     discountValue: 50,
-    minOrderValue: 499,
+    minOrderValue: 249,
     expiryDate: '2026-12-31',
     usageLimit: 500,
     usedCount: 87,
     firstOrderOnly: false,
     isActive: true,
-    descriptionEn: 'Flat ₹50 OFF on fresh groceries above ₹499',
-    descriptionBn: '₹৪৯৯ টাকার বেশি কেনাকাটায় ফ্ল্যাট ₹৫০ ছাড়'
+    descriptionEn: 'Flat ₹50 OFF on fresh groceries above ₹249',
+    descriptionBn: '₹২৪৯ টাকার বেশি কেনাকাটায় ফ্ল্যাট ₹৫০ ছাড়'
   },
   {
     id: 'c-bazar100',
     code: 'BAZAR100',
     discountType: 'fixed',
     discountValue: 100,
-    minOrderValue: 999,
+    minOrderValue: 499,
     expiryDate: '2026-12-31',
     usageLimit: 300,
     usedCount: 45,
     firstOrderOnly: false,
     isActive: true,
-    descriptionEn: 'Flat ₹100 OFF on pantry & monthly bulk orders above ₹999',
-    descriptionBn: '₹৯৯৯ টাকার বেশি বড় অর্ডারে ফ্ল্যাট ₹১০০ ছাড়'
+    descriptionEn: 'Flat ₹100 OFF on pantry orders above ₹499',
+    descriptionBn: '₹৪৯৯ টাকার বেশি কেনাকাটায় ফ্ল্যাট ₹১০০ ছাড়'
+  },
+  {
+    id: 'c-save20',
+    code: 'SAVE20',
+    discountType: 'percentage',
+    discountValue: 20,
+    minOrderValue: 299,
+    maxDiscount: 150,
+    expiryDate: '2026-12-31',
+    usageLimit: 400,
+    usedCount: 30,
+    firstOrderOnly: false,
+    isActive: true,
+    descriptionEn: 'Special 20% OFF up to ₹150 (Min order ₹299)',
+    descriptionBn: 'বিশেষ ২০% ছাড় (সর্বোচ্চ ₹১৫০, ন্যূনতম অর্ডার ₹২৯৯)'
   }
 ];
 

@@ -577,22 +577,37 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const applyCoupon = (code: string) => {
     const clean = code.trim().toUpperCase();
-    const found = coupons.find(c => c.code.toUpperCase() === clean && c.isActive);
+    if (!clean) {
+      return { success: false, message: 'অনুগ্রহ করে একটি কুপন কোড লিখুন (যেমন: WELCOME10, FRESH50)' };
+    }
+
+    // Check currently loaded coupons or fall back to initialCoupons
+    let found = coupons.find(c => c.code.toUpperCase() === clean && c.isActive);
+    if (!found) {
+      found = initialCoupons.find(c => c.code.toUpperCase() === clean && c.isActive);
+    }
 
     if (!found) {
-      return { success: false, message: 'Invalid or inactive coupon code.' };
+      return { success: false, message: `"${clean}" কোনো সঠিক কুপন কোড নয়। সঠিক কুপন লিখুন।` };
     }
 
     if (new Date(found.expiryDate) < new Date()) {
-      return { success: false, message: 'This coupon code has expired.' };
+      return { success: false, message: 'এই কুপনটির মেয়াদ শেষ হয়ে গেছে।' };
     }
 
     if (cartSubtotal < found.minOrderValue) {
-      return { success: false, message: `Minimum order value of ₹${found.minOrderValue} required for this coupon.` };
+      return {
+        success: false,
+        message: `এই কুপনে ছাড় পেতে ন্যূনতম ₹${found.minOrderValue} টাকার কেনাকাটা প্রয়োজন (বর্তমান উপমোট ₹${cartSubtotal})।`
+      };
     }
 
     setAppliedCoupon(found);
-    return { success: true, message: `Coupon applied! Saved ₹${found.discountType === 'fixed' ? found.discountValue : `${found.discountValue}%`}` };
+    const discLabel = found.discountType === 'fixed' ? `₹${found.discountValue}` : `${found.discountValue}%`;
+    return {
+      success: true,
+      message: `কুপন কোড "${found.code}" সফলভাবে প্রয়োগ হয়েছে! আপনি ${discLabel} ছাড় পেয়েছেন।`
+    };
   };
 
   const removeCoupon = () => {

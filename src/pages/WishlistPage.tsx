@@ -15,7 +15,7 @@ export const WishlistPage: React.FC<WishlistPageProps> = ({ onNavigate }) => {
   const wishlistedProducts = products.filter(p => wishlist.includes(p.id));
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8">
+    <div className="max-w-7xl mx-auto px-3 sm:px-6 py-5 sm:py-8 space-y-6 sm:space-y-8">
       <div className="flex items-center justify-between pb-4 border-b border-[#E5EAE5]">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-[#252B27]">
@@ -55,7 +55,7 @@ export const WishlistPage: React.FC<WishlistPageProps> = ({ onNavigate }) => {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 sm:gap-5">
           {wishlistedProducts.map((p) => (
             <ProductCard key={p.id} product={p} onNavigate={onNavigate} />
           ))}

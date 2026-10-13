@@ -233,14 +233,14 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
         </div>
       </section>
 
-      {/* Categories Grid */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="flex items-end justify-between mb-6 sm:mb-8">
+      {/* Categories Grid - 3 columns on mobile, highly responsive */}
+      <section className="max-w-7xl mx-auto px-3 sm:px-6">
+        <div className="flex items-end justify-between mb-4 sm:mb-8">
           <div>
             <span className="text-xs font-extrabold uppercase tracking-wider text-[#176B45]">
               {language === 'bn' ? 'ক্যাটাগরি' : 'CATEGORIES'}
             </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#252B27] mt-1">
+            <h2 className="text-xl sm:text-3xl font-extrabold text-[#252B27] mt-0.5 sm:mt-1">
               {t('popularCategories')}
             </h2>
           </div>
@@ -253,14 +253,14 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
           </button>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5 sm:gap-5">
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2 sm:gap-4">
           {categories.map((cat) => (
             <div
               key={cat.id}
               onClick={() => onNavigate('category', { slug: cat.slug })}
-              className="bg-white rounded-2xl border border-[#E5EAE5] p-3.5 sm:p-4 hover:shadow-lg hover:border-[#4FA86B] cursor-pointer transition-all duration-200 flex flex-col items-center text-center group"
+              className="bg-white rounded-xl sm:rounded-2xl border border-[#E5EAE5] p-2 sm:p-3.5 hover:shadow-lg hover:border-[#4FA86B] cursor-pointer transition-all duration-200 flex flex-col items-center text-center group active:scale-95"
             >
-              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden mb-3 bg-[#F7F9F5] group-hover:scale-105 transition-transform">
+              <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-xl sm:rounded-2xl overflow-hidden mb-2 sm:mb-3 bg-[#F7F9F5] group-hover:scale-105 transition-transform shrink-0">
                 <img
                   src={cat.image}
                   alt={cat.nameEn}
@@ -268,10 +268,10 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
                   loading="lazy"
                 />
               </div>
-              <h3 className="text-xs sm:text-sm font-bold text-[#252B27] group-hover:text-[#176B45] transition-colors line-clamp-1">
+              <h3 className="text-[11px] sm:text-xs font-bold text-[#252B27] group-hover:text-[#176B45] transition-colors line-clamp-1">
                 {language === 'bn' ? cat.nameBn : cat.nameEn}
               </h3>
-              <p className="text-[10px] text-gray-500 mt-0.5">
+              <p className="text-[9px] sm:text-[10px] text-gray-400 mt-0.5 truncate hidden sm:block">
                 {cat.subcategories.length} {language === 'bn' ? 'উপ-বিভাগ' : 'varieties'}
               </p>
             </div>
@@ -280,13 +280,13 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
       </section>
 
       {/* Promotional Deal Banner */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="bg-gradient-to-r from-[#176B45] via-[#1d7d51] to-[#249660] rounded-3xl p-6 sm:p-10 text-white relative overflow-hidden shadow-xl">
-          <div className="relative z-10 max-w-xl space-y-3">
-            <span className="bg-[#FFD166] text-[#252B27] text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider inline-block">
+      <section className="max-w-7xl mx-auto px-3 sm:px-6">
+        <div className="bg-gradient-to-r from-[#176B45] via-[#1d7d51] to-[#249660] rounded-2xl sm:rounded-3xl p-5 sm:p-10 text-white relative overflow-hidden shadow-xl">
+          <div className="relative z-10 max-w-xl space-y-2.5 sm:space-y-3">
+            <span className="bg-[#FFD166] text-[#252B27] text-[10px] sm:text-xs font-black px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full uppercase tracking-wider inline-block">
               {language === 'bn' ? 'বিশেষ ছাড়' : 'LIMITED TIME SAVER'}
             </span>
-            <h3 className="text-2xl sm:text-4xl font-black leading-tight text-white">
+            <h3 className="text-xl sm:text-3xl lg:text-4xl font-black leading-tight text-white">
               {language === 'bn' ? 'সুপার সেভার কুপন: প্রথম অর্ডারে ১০% ছাড়!' : 'Super Saver Deal: Flat 10% OFF on Your First Basket!'}
             </h3>
             <p className="text-xs sm:text-sm text-green-100">
@@ -294,16 +294,16 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
                 ? 'চেকআউটে WELCOME10 কোড ব্যবহার করুন। একই দিনে বিনামূল্যে হোম ডেলিভারি।'
                 : 'Apply code WELCOME10 at checkout on orders above ₹299. Fresh staples delivered same day.'}
             </p>
-            <div className="pt-2 flex items-center gap-3">
+            <div className="pt-2 flex flex-wrap items-center gap-2.5 sm:gap-3">
               <button
                 onClick={() => onNavigate('shop')}
-                className="px-5 py-2.5 bg-[#FFD166] text-[#252B27] font-extrabold text-xs sm:text-sm rounded-xl hover:bg-yellow-300 transition-colors shadow-sm"
+                className="px-4 sm:px-5 py-2 sm:py-2.5 bg-[#FFD166] text-[#252B27] font-extrabold text-xs sm:text-sm rounded-xl hover:bg-yellow-300 transition-colors shadow-sm active:scale-95"
               >
                 {t('shopGroceriesBtn')}
               </button>
               <button
                 onClick={() => onNavigate('offers')}
-                className="px-5 py-2.5 bg-white/15 hover:bg-white/25 text-white font-bold text-xs sm:text-sm rounded-xl transition-colors"
+                className="px-4 sm:px-5 py-2 sm:py-2.5 bg-white/15 hover:bg-white/25 text-white font-bold text-xs sm:text-sm rounded-xl transition-colors active:scale-95"
               >
                 {t('exploreOffersBtn')}
               </button>
@@ -318,13 +318,13 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
       </section>
 
       {/* Featured Products / Daily Essentials */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="flex items-end justify-between mb-6 sm:mb-8">
+      <section className="max-w-7xl mx-auto px-3 sm:px-6">
+        <div className="flex items-end justify-between mb-4 sm:mb-8">
           <div>
             <span className="text-xs font-extrabold uppercase tracking-wider text-[#176B45]">
               {language === 'bn' ? 'তাজা ডিল' : 'FRESH PICKS'}
             </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#252B27] mt-1">
+            <h2 className="text-xl sm:text-3xl font-extrabold text-[#252B27] mt-0.5 sm:mt-1">
               {t('featuredProducts')}
             </h2>
           </div>
@@ -337,7 +337,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
           </button>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3.5 sm:gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 sm:gap-5">
           {featuredProducts.map((product) => (
             <ProductCard key={product.id} product={product} onNavigate={onNavigate} />
           ))}
@@ -345,13 +345,13 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
       </section>
 
       {/* Best Sellers Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="flex items-end justify-between mb-6 sm:mb-8">
+      <section className="max-w-7xl mx-auto px-3 sm:px-6">
+        <div className="flex items-end justify-between mb-4 sm:mb-8">
           <div>
             <span className="text-xs font-extrabold uppercase tracking-wider text-amber-600">
               {language === 'bn' ? 'জনপ্রিয় পছন্দ' : 'POPULAR CHOICES'}
             </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#252B27] mt-1">
+            <h2 className="text-xl sm:text-3xl font-extrabold text-[#252B27] mt-0.5 sm:mt-1">
               {t('bestSellers')}
             </h2>
           </div>
@@ -364,7 +364,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
           </button>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3.5 sm:gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 sm:gap-5">
           {bestSellers.map((product) => (
             <ProductCard key={product.id} product={product} onNavigate={onNavigate} />
           ))}

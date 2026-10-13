@@ -24,7 +24,7 @@ export const OffersPage: React.FC<OffersPageProps> = ({ onNavigate }) => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-12">
+    <div className="max-w-7xl mx-auto px-3 sm:px-6 py-6 sm:py-12 space-y-8 sm:space-y-12">
       
       {/* Offers Banner */}
       <div className="bg-gradient-to-r from-[#176B45] via-[#218155] to-[#299b66] rounded-3xl p-6 sm:p-10 text-white relative overflow-hidden shadow-xl">
@@ -141,7 +141,7 @@ export const OffersPage: React.FC<OffersPageProps> = ({ onNavigate }) => {
           </button>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3.5 sm:gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 sm:gap-5">
           {discountedProducts.map((p) => (
             <ProductCard key={p.id} product={p} onNavigate={onNavigate} />
           ))}

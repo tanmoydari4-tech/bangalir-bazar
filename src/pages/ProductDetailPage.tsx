@@ -108,13 +108,13 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId,
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 space-y-10">
+    <div className="max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-10 space-y-6 sm:space-y-10">
       
       {/* Back Button & Breadcrumbs */}
-      <div className="flex items-center gap-3 text-xs text-gray-500">
+      <div className="flex items-center gap-2 sm:gap-3 text-xs text-gray-500 overflow-x-auto pb-1 scrollbar-none">
         <button
           onClick={() => onNavigate('shop')}
-          className="flex items-center gap-1.5 font-bold text-[#176B45] hover:underline"
+          className="flex items-center gap-1.5 font-bold text-[#176B45] hover:underline shrink-0"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>{t('backToShop')}</span>
@@ -124,18 +124,18 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId,
           <>
             <span
               onClick={() => onNavigate('category', { slug: category.slug })}
-              className="hover:text-gray-900 cursor-pointer"
+              className="hover:text-gray-900 cursor-pointer shrink-0"
             >
               {language === 'bn' ? category.nameBn : category.nameEn}
             </span>
             <span>/</span>
           </>
         )}
-        <span className="text-gray-800 font-medium truncate max-w-xs">{title}</span>
+        <span className="text-gray-800 font-medium truncate max-w-[150px] sm:max-w-xs">{title}</span>
       </div>
 
       {/* Main Product Showcase Box */}
-      <div className="bg-white rounded-3xl border border-[#E5EAE5] p-6 sm:p-10 shadow-sm">
+      <div className="bg-white rounded-2xl sm:rounded-3xl border border-[#E5EAE5] p-4 sm:p-10 shadow-sm">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
           
           {/* Left Column: Image Gallery */}
@@ -254,58 +254,62 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId,
             </div>
 
             {/* Quantity Selector & Action Buttons */}
-            <div className="pt-2 flex flex-wrap items-center gap-3">
-              {/* Quantity */}
-              {!isOutOfStock && (
-                <div className="flex items-center border-2 border-[#176B45] rounded-xl bg-white overflow-hidden shadow-xs">
-                  <button
-                    onClick={() => {
-                      if (quantityInCart > 0) updateCartQuantity(product.id, quantityInCart - 1);
-                    }}
-                    className="p-3 text-[#176B45] hover:bg-green-50 transition-colors"
-                  >
-                    <Minus className="w-4 h-4" />
-                  </button>
-                  <span className="px-4 text-sm font-extrabold text-[#176B45] min-w-[36px] text-center">
-                    {quantityInCart || 1}
-                  </span>
-                  <button
-                    onClick={() => {
-                      if (quantityInCart === 0) {
-                        addToCart(product, 1);
-                      } else {
-                        updateCartQuantity(product.id, quantityInCart + 1);
-                      }
-                    }}
-                    disabled={quantityInCart >= product.stockQuantity}
-                    className="p-3 text-[#176B45] hover:bg-green-50 disabled:opacity-40 transition-colors"
-                  >
-                    <Plus className="w-4 h-4" />
-                  </button>
-                </div>
-              )}
+            <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3">
+              <div className="flex items-center gap-2 sm:gap-3">
+                {/* Quantity */}
+                {!isOutOfStock && (
+                  <div className="flex items-center border-2 border-[#176B45] rounded-xl bg-white overflow-hidden shadow-xs h-11 sm:h-12 shrink-0">
+                    <button
+                      onClick={() => {
+                        if (quantityInCart > 0) updateCartQuantity(product.id, quantityInCart - 1);
+                      }}
+                      className="px-3 h-full text-[#176B45] hover:bg-green-50 transition-colors flex items-center justify-center"
+                      aria-label="Decrease quantity"
+                    >
+                      <Minus className="w-4 h-4" />
+                    </button>
+                    <span className="px-2 text-sm font-extrabold text-[#176B45] min-w-[32px] text-center">
+                      {quantityInCart || 1}
+                    </span>
+                    <button
+                      onClick={() => {
+                        if (quantityInCart === 0) {
+                          addToCart(product, 1);
+                        } else {
+                          updateCartQuantity(product.id, quantityInCart + 1);
+                        }
+                      }}
+                      disabled={quantityInCart >= product.stockQuantity}
+                      className="px-3 h-full text-[#176B45] hover:bg-green-50 disabled:opacity-40 transition-colors flex items-center justify-center"
+                      aria-label="Increase quantity"
+                    >
+                      <Plus className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
 
-              {/* Add to Basket */}
-              <button
-                disabled={isOutOfStock}
-                onClick={() => {
-                  if (quantityInCart === 0) addToCart(product, 1);
-                }}
-                className={`flex-1 py-3.5 px-6 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all shadow-md ${
-                  isOutOfStock
-                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                    : 'bg-[#176B45] hover:bg-[#125436] text-white active:scale-98'
-                }`}
-              >
-                <ShoppingBag className="w-4 h-4" />
-                <span>{quantityInCart > 0 ? `${t('addedToCart')} (${quantityInCart})` : t('addToCart')}</span>
-              </button>
+                {/* Add to Basket */}
+                <button
+                  disabled={isOutOfStock}
+                  onClick={() => {
+                    if (quantityInCart === 0) addToCart(product, 1);
+                  }}
+                  className={`flex-1 h-11 sm:h-12 px-4 sm:px-6 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all shadow-md ${
+                    isOutOfStock
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                      : 'bg-[#176B45] hover:bg-[#125436] text-white active:scale-98'
+                  }`}
+                >
+                  <ShoppingBag className="w-4 h-4 shrink-0" />
+                  <span className="truncate">{quantityInCart > 0 ? `${t('addedToCart')} (${quantityInCart})` : t('addToCart')}</span>
+                </button>
+              </div>
 
               {/* Buy Now */}
               {!isOutOfStock && (
                 <button
                   onClick={handleBuyNow}
-                  className="py-3.5 px-6 bg-[#FFD166] hover:bg-yellow-400 text-[#252B27] font-extrabold text-xs sm:text-sm rounded-xl transition-all shadow-sm active:scale-98"
+                  className="h-11 sm:h-12 px-6 bg-[#FFD166] hover:bg-yellow-400 text-[#252B27] font-extrabold text-xs sm:text-sm rounded-xl transition-all shadow-sm active:scale-98 flex items-center justify-center"
                 >
                   {t('buyNow')}
                 </button>

@@ -17,7 +17,8 @@ import {
   Truck,
   QrCode,
   DollarSign,
-  Lock
+  Lock,
+  Tag
 } from 'lucide-react';
 
 interface CheckoutPageProps {
@@ -38,9 +39,15 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
     deliveryAreas,
     activePinCode,
     selectedDeliveryArea,
-    createOrder
+    createOrder,
+    appliedCoupon,
+    applyCoupon,
+    removeCoupon
   } = useStore();
   const { t, language } = useLanguage();
+
+  const [checkoutCouponCode, setCheckoutCouponCode] = useState('');
+  const [checkoutCouponMsg, setCheckoutCouponMsg] = useState<{ success: boolean; text: string } | null>(null);
 
   // Address state
   const savedAddresses = currentUser?.addresses || [];
@@ -609,24 +616,102 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ onNavigate }) => {
               ))}
             </div>
 
+            {/* Coupon Box in Checkout */}
+            <div className="pt-3 border-t border-gray-100 space-y-2">
+              <div className="flex items-center justify-between text-xs font-bold text-gray-800">
+                <span className="flex items-center gap-1.5">
+                  <Tag className="w-3.5 h-3.5 text-[#176B45]" />
+                  <span>{language === 'bn' ? 'কুপন কোড' : 'Coupon Code'}</span>
+                </span>
+                <span className="text-[10px] text-gray-500 font-normal">
+                  {language === 'bn' ? 'লিখলে ছাড় পাবেন' : 'Apply to save'}
+                </span>
+              </div>
+
+              {appliedCoupon ? (
+                <div className="flex items-center justify-between bg-emerald-50 text-emerald-800 p-2.5 rounded-xl text-xs font-medium border border-emerald-200">
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span className="truncate font-mono font-bold text-[#176B45]">{appliedCoupon.code}</span>
+                    <span className="text-[11px] text-emerald-700">(-₹{cartDiscount})</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      removeCoupon();
+                      setCheckoutCouponMsg(null);
+                    }}
+                    className="text-xs font-bold text-rose-600 hover:text-rose-700 hover:underline shrink-0 ml-2 cursor-pointer"
+                  >
+                    {language === 'bn' ? 'মুছুন' : 'Remove'}
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-1.5">
+                  <div className="flex gap-1.5">
+                    <input
+                      type="text"
+                      value={checkoutCouponCode}
+                      onChange={(e) => {
+                        setCheckoutCouponCode(e.target.value.toUpperCase());
+                        setCheckoutCouponMsg(null);
+                      }}
+                      placeholder="e.g. WELCOME10"
+                      className="flex-1 px-3 py-1.5 border border-gray-300 rounded-xl text-xs font-mono font-bold uppercase focus:outline-none focus:ring-1 focus:ring-[#176B45] bg-gray-50/50"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (!checkoutCouponCode.trim()) return;
+                        const res = applyCoupon(checkoutCouponCode);
+                        setCheckoutCouponMsg({ success: res.success, text: res.message });
+                        if (res.success) setCheckoutCouponCode('');
+                      }}
+                      className="px-3 py-1.5 bg-[#176B45] hover:bg-[#125436] text-white text-xs font-bold rounded-xl transition-colors cursor-pointer"
+                    >
+                      {language === 'bn' ? 'Apply' : 'Apply'}
+                    </button>
+                  </div>
+
+                  {checkoutCouponMsg && (
+                    <div
+                      className={`p-2 rounded-xl text-[11px] flex items-center gap-1.5 ${
+                        checkoutCouponMsg.success
+                          ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                          : 'bg-rose-50 text-rose-800 border border-rose-200'
+                      }`}
+                    >
+                      {checkoutCouponMsg.success ? (
+                        <CheckCircle2 className="w-3.5 h-3.5 shrink-0 text-emerald-600" />
+                      ) : (
+                        <AlertCircle className="w-3.5 h-3.5 shrink-0 text-rose-600" />
+                      )}
+                      <span>{checkoutCouponMsg.text}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
             {/* Calculations */}
             <div className="pt-3 border-t border-gray-100 space-y-2 text-xs text-gray-600">
               <div className="flex justify-between">
                 <span>{t('subtotal')}</span>
                 <span className="font-bold text-gray-900">₹{cartSubtotal}</span>
               </div>
-              {savingsTotal > 0 && (
-                <div className="flex justify-between text-emerald-700">
-                  <span>{t('itemDiscount')}</span>
-                  <span className="font-bold">-₹{savingsTotal}</span>
-                </div>
-              )}
-              {cartDiscount > 0 && (
-                <div className="flex justify-between text-emerald-700">
-                  <span>Coupon Discount</span>
+
+              {cartDiscount > 0 ? (
+                <div className="flex justify-between text-emerald-700 font-medium bg-emerald-50/60 p-1.5 rounded-lg border border-emerald-100">
+                  <span>{language === 'bn' ? `কুপন ছাড় (${appliedCoupon?.code})` : `Coupon Discount (${appliedCoupon?.code})`}</span>
                   <span className="font-bold">-₹{cartDiscount}</span>
                 </div>
+              ) : (
+                <div className="flex justify-between text-gray-400">
+                  <span>{language === 'bn' ? 'কুপন ছাড়' : 'Coupon Discount'}</span>
+                  <span>{language === 'bn' ? '₹০ (কুপন লিখলে ছাড় পাবেন)' : '₹0 (No coupon)'}</span>
+                </div>
               )}
+
               <div className="flex justify-between">
                 <span>{t('deliveryFee')}</span>
                 <span className={`font-bold ${deliveryFee === 0 ? 'text-emerald-700' : 'text-gray-900'}`}>
