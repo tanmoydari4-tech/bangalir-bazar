@@ -177,49 +177,53 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
             <div className="lg:col-span-5 relative">
               <div className="relative mx-auto max-w-md lg:max-w-none">
                 {/* Main Hero Visual Card */}
-                <div className="rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-white">
-                  <img
-                    src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=800&q=80"
-                    alt="Fresh Groceries"
-                    className="w-full h-80 sm:h-96 object-cover"
-                  />
-                  <div className="p-4 sm:p-5 bg-gradient-to-t from-black/80 via-black/40 to-transparent absolute bottom-0 inset-x-0 text-white">
-                    <span className="bg-[#FFD166] text-[#252B27] text-[10px] uppercase font-black px-2.5 py-1 rounded-md">
-                      {language === 'bn' ? 'ফার্ম থেকে সোজা ঘরে' : 'FARM TO FORK'}
-                    </span>
-                    <h3 className="text-lg sm:text-xl font-bold mt-1 text-white">
-                      {language === 'bn' ? 'খাঁটি সরিষার তেল ও টাটকা শাকসবজি' : 'Pure Mustard Oil, Grains & Fresh Greens'}
-                    </h3>
-                    <p className="text-xs text-gray-200 mt-0.5">
-                      {language === 'bn' ? 'প্রতিদিন সকাল ও সন্ধ্যায় হোম ডেলিভারি' : 'Morning & Evening slots delivered fresh to your door'}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Floating highlight badge 1 - Safely anchored, bilingual */}
-                <div className="absolute top-3 left-2 sm:-left-3 bg-white/95 backdrop-blur-xs p-2.5 sm:p-3 rounded-2xl shadow-xl border border-gray-100 flex items-center gap-2.5 animate-in fade-in">
-                  <div className="p-1.5 sm:p-2 bg-green-100 text-[#176B45] rounded-xl shrink-0">
-                    <Truck className="w-4 h-4 sm:w-5 sm:h-5" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-gray-800">{t('fastDelivery')}</div>
-                    <div className="text-[10px] text-gray-500">
-                      {language === 'bn' ? 'সকাল ও সন্ধ্যার স্লট' : 'Scheduled Slots'}
+                {/* Main Hero Visual Card */}
+                <div className="rounded-3xl overflow-hidden shadow-xl border-4 border-white bg-white">
+                  <div className="relative aspect-4/3 sm:aspect-16/11 overflow-hidden">
+                    <img
+                      src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=800&q=80"
+                      alt="Fresh Groceries"
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="p-4 sm:p-5 bg-gradient-to-t from-black/85 via-black/45 to-transparent absolute bottom-0 inset-x-0 text-white">
+                      <span className="bg-[#FFD166] text-[#252B27] text-[10px] uppercase font-black px-2.5 py-0.5 rounded-md inline-block">
+                        {language === 'bn' ? 'ফার্ম থেকে সোজা ঘরে' : 'FARM TO FORK'}
+                      </span>
+                      <h3 className="text-base sm:text-lg font-bold mt-1 text-white leading-snug">
+                        {language === 'bn' ? 'খাঁটি সরিষার তেল ও টাটকা শাকসবজি' : 'Pure Mustard Oil, Grains & Fresh Greens'}
+                      </h3>
+                      <p className="text-[11px] text-gray-200 mt-0.5">
+                        {language === 'bn' ? 'প্রতিদিন সকাল ও সন্ধ্যায় হোম ডেলিভারি' : 'Morning & Evening slots delivered fresh to your door'}
+                      </p>
                     </div>
                   </div>
-                </div>
 
-                {/* Floating highlight badge 2 - Safely anchored, bilingual */}
-                <div className="absolute bottom-3 right-2 sm:-right-3 bg-white/95 backdrop-blur-xs p-2.5 sm:p-3 rounded-2xl shadow-xl border border-gray-100 flex items-center gap-2.5 animate-in fade-in">
-                  <div className="p-1.5 sm:p-2 bg-amber-100 text-amber-800 rounded-xl shrink-0">
-                    <ShieldCheck className="w-4 h-4 sm:w-5 sm:h-5" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-gray-800">
-                      {language === 'bn' ? '১০০% গুণমান নিশ্চিত' : '100% Quality Check'}
+                  {/* Hero Trust Bar underneath the card image (no overlay clashes) */}
+                  <div className="p-2.5 sm:p-3 bg-white grid grid-cols-2 gap-2 border-t border-gray-100">
+                    <div className="flex items-center gap-2 p-2 rounded-xl bg-green-50/80">
+                      <div className="p-1.5 bg-green-100 text-[#176B45] rounded-lg shrink-0">
+                        <Truck className="w-4 h-4" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-xs font-bold text-gray-800 truncate">{t('fastDelivery')}</div>
+                        <div className="text-[10px] text-gray-500 truncate">
+                          {language === 'bn' ? 'সকাল ও সন্ধ্যার স্লট' : 'Scheduled Slots'}
+                        </div>
+                      </div>
                     </div>
-                    <div className="text-[10px] text-gray-500">
-                      {language === 'bn' ? 'সহজ রিটার্ন সুবিধা' : 'Doorstep Return Policy'}
+
+                    <div className="flex items-center gap-2 p-2 rounded-xl bg-amber-50/80">
+                      <div className="p-1.5 bg-amber-100 text-amber-800 rounded-lg shrink-0">
+                        <ShieldCheck className="w-4 h-4" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-xs font-bold text-gray-800 truncate">
+                          {language === 'bn' ? '১০০% গুণমান নিশ্চিত' : '100% Quality Check'}
+                        </div>
+                        <div className="text-[10px] text-gray-500 truncate">
+                          {language === 'bn' ? 'সহজ রিটার্ন সুবিধা' : 'Doorstep Return Policy'}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>

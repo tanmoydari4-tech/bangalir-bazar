@@ -131,68 +131,68 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onNavigate })
         </div>
 
         {/* Pricing & Add to Cart Area - Perfectly aligned across all cards */}
-        <div className="pt-2.5 border-t border-[#E5EAE5]/70 flex items-center justify-between gap-1.5 sm:gap-2">
+        <div className="pt-2 border-t border-[#E5EAE5]/70 flex items-center justify-between gap-1 sm:gap-2">
           {/* Price Block with consistent height */}
           <div className="min-w-0 flex-1 flex flex-col justify-center">
-            <div className="flex items-baseline gap-1 sm:gap-1.5 leading-none">
-              <span className="text-sm sm:text-base font-black text-[#176B45] tracking-tight">
+            <div className="flex items-baseline gap-1 leading-none">
+              <span className="text-xs sm:text-sm md:text-base font-black text-[#176B45] tracking-tight">
                 ₹{product.sellingPrice}
               </span>
               {discountPercent > 0 && (
-                <span className="text-[10px] sm:text-xs text-gray-400 line-through">
+                <span className="text-[9px] sm:text-xs text-gray-400 line-through">
                   ₹{product.originalPrice}
                 </span>
               )}
             </div>
             {discountPercent > 0 ? (
-              <div className="text-[9px] sm:text-[10px] font-bold text-emerald-700 truncate mt-0.5 leading-tight">
+              <div className="text-[8px] sm:text-[9px] font-bold text-emerald-700 truncate mt-0.5 leading-tight">
                 {t('save')} ₹{product.originalPrice - product.sellingPrice}
               </div>
             ) : (
-              <div className="text-[9px] sm:text-[10px] font-medium text-transparent select-none mt-0.5 leading-tight">
+              <div className="text-[8px] sm:text-[9px] font-medium text-transparent select-none mt-0.5 leading-tight">
                 •
               </div>
             )}
           </div>
 
-          {/* Add / Quantity Buttons - Fixed matching dimensions */}
+          {/* Add / Quantity Buttons - Compact small size as requested */}
           <div className="shrink-0">
             {isOutOfStock ? (
               <button
                 disabled
-                className="h-8 sm:h-9 px-2 sm:px-3 bg-gray-100 text-gray-400 text-[10px] sm:text-xs font-bold rounded-xl cursor-not-allowed whitespace-nowrap min-w-[66px] sm:min-w-[76px] flex items-center justify-center"
+                className="h-6.5 sm:h-7 px-1.5 sm:px-2 bg-gray-100 text-gray-400 text-[9px] sm:text-[10px] font-bold rounded-lg cursor-not-allowed whitespace-nowrap min-w-[50px] sm:min-w-[58px] flex items-center justify-center"
               >
                 {t('outOfStock')}
               </button>
             ) : inCart ? (
-              <div className="flex items-center justify-between border-2 border-[#176B45] rounded-xl bg-green-50/90 overflow-hidden shadow-xs h-8 sm:h-9 min-w-[66px] sm:min-w-[76px]">
+              <div className="flex items-center justify-between border-1.5 border-[#176B45] rounded-lg bg-green-50/90 overflow-hidden shadow-2xs h-6.5 sm:h-7 min-w-[50px] sm:min-w-[58px]">
                 <button
                   onClick={() => updateCartQuantity(product.id, quantity - 1)}
-                  className="w-6 sm:w-7 h-full text-[#176B45] hover:bg-green-200/60 active:scale-90 transition-transform flex items-center justify-center shrink-0"
+                  className="w-4 sm:w-5 h-full text-[#176B45] hover:bg-green-200/60 active:scale-90 transition-transform flex items-center justify-center shrink-0"
                   aria-label="Decrease quantity"
                 >
-                  <Minus className="w-3 h-3 sm:w-3.5 sm:h-3.5 stroke-[2.5]" />
+                  <Minus className="w-2.5 h-2.5 sm:w-3 sm:h-3 stroke-[2.5]" />
                 </button>
-                <span className="text-xs sm:text-sm font-black text-[#176B45] text-center px-0.5 flex-1 select-none">
+                <span className="text-[10px] sm:text-xs font-black text-[#176B45] text-center px-0.5 flex-1 select-none">
                   {quantity}
                 </span>
                 <button
                   onClick={() => updateCartQuantity(product.id, quantity + 1)}
                   disabled={quantity >= product.stockQuantity}
-                  className="w-6 sm:w-7 h-full text-[#176B45] hover:bg-green-200/60 active:scale-90 disabled:opacity-30 transition-transform flex items-center justify-center shrink-0"
+                  className="w-4 sm:w-5 h-full text-[#176B45] hover:bg-green-200/60 active:scale-90 disabled:opacity-30 transition-transform flex items-center justify-center shrink-0"
                   aria-label="Increase quantity"
                 >
-                  <Plus className="w-3 h-3 sm:w-3.5 sm:h-3.5 stroke-[2.5]" />
+                  <Plus className="w-2.5 h-2.5 sm:w-3 sm:h-3 stroke-[2.5]" />
                 </button>
               </div>
             ) : (
               <button
                 onClick={() => addToCart(product, 1)}
-                className="h-8 sm:h-9 px-2.5 sm:px-3 bg-[#176B45] hover:bg-[#125436] active:scale-95 text-white text-[11px] sm:text-xs font-black rounded-xl transition-all shadow-xs flex items-center justify-center gap-1 min-w-[66px] sm:min-w-[76px] shrink-0 whitespace-nowrap select-none"
+                className="h-6.5 sm:h-7 px-2 sm:px-2.5 bg-[#176B45] hover:bg-[#125436] active:scale-95 text-white text-[10px] sm:text-[11px] font-black rounded-lg transition-all shadow-2xs flex items-center justify-center gap-0.5 sm:gap-1 min-w-[50px] sm:min-w-[58px] shrink-0 whitespace-nowrap select-none"
                 title={t('addToCart')}
                 aria-label={t('addToCart')}
               >
-                <Plus className="w-3.5 h-3.5 stroke-[3]" />
+                <Plus className="w-2.5 h-2.5 sm:w-3 sm:h-3 stroke-[3]" />
                 <span>{language === 'bn' ? 'যোগ' : 'ADD'}</span>
               </button>
             )}
